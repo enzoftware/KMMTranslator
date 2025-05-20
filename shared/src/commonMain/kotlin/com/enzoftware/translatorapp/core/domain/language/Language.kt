@@ -1,3 +1,5 @@
+package com.enzoftware.translatorapp.core.domain.language
+
 enum class Language(
     val code: String,
     val languageName: String,
@@ -33,7 +35,7 @@ enum class Language(
 
     companion object {
         fun byCode(code: String): Language {
-            return values().find { it.code == code }
+            return entries.find { it.code == code }
                 ?: throw IllegalArgumentException("Invalid or unsupported language code")
         }
     }

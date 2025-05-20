@@ -1,6 +1,6 @@
 package com.enzoftware.translatorapp.translate.data.translate
 
-import Language
+import com.enzoftware.translatorapp.core.domain.language.Language
 import com.enzoftware.translatorapp.translate.domain.translate.TranslateClient
 import com.enzoftware.translatorapp.translate.domain.translate.TranslateError
 import com.enzoftware.translatorapp.translate.domain.translate.TranslateException
