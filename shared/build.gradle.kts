@@ -77,3 +77,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
+sqldelight {
+    databases {
+        create("TranslatorDatabase") {
+            packageName.set("com.enzoftware.translatorapp")
+        }
+    }
+}
