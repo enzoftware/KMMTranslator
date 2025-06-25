@@ -7,5 +7,5 @@ data class UiHistoryItem(
     val fromText: String,
     val toText: String,
     val fromLanguage: UiLanguage,
-    val toLanguge: UiLanguage
+    val toLanguage: UiLanguage
 )
