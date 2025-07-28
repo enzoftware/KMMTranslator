@@ -8,30 +8,12 @@ enum class Language(
     ARABIC("ar", "Arabic"),
     AZERBAIJANI("az", "Azerbaijani"),
     CHINESE("zh", "Chinese"),
-    CZECH("cs", "Czech"),
-    DANISH("da", "Danish"),
-    DUTCH("nl", "Dutch"),
-    FINNISH("fi", "Finnish"),
     FRENCH("fr", "French"),
     GERMAN("de", "German"),
-    GREEK("el", "Greek"),
-    HEBREW("he", "Hebrew"),
-    HINDI("hi", "Hindi"),
-    HUNGARIAN("hu", "Hungarian"),
-    INDONESIAN("id", "Indonesian"),
-    IRISH("ga", "Irish"),
     ITALIAN("it", "Italian"),
     JAPANESE("ja", "Japanese"),
     KOREAN("ko", "Korean"),
-    PERSIAN("fa", "Persian"),
-    POLISH("pl", "Polish"),
-    PORTUGUESE("pt", "Portuguese"),
-    RUSSIAN("ru", "Russian"),
-    SLOVAK("sk", "Slovak"),
-    SPANISH("es", "Spanish"),
-    SWEDISH("sv", "Swedish"),
-    TURKISH("tr", "Turkish"),
-    UKRAINIAN("uk", "Ukrainian");
+    SPANISH("es", "Spanish");
 
     companion object {
         fun byCode(code: String): Language {

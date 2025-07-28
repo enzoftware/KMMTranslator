@@ -7,6 +7,7 @@ import com.enzoftware.translatorapp.core.util.CommonFlow
 import com.enzoftware.translatorapp.core.util.toCommonFlow
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
 import com.enzoftware.translatorapp.translate.domain.history.HistoryItem
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Clock
@@ -15,18 +16,17 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class SqlDelightHistoryDataSource(
     db: TranslatorDatabase,
-    val coroutineCtx: CoroutineContext
 ) : HistoryDataSource {
     private val queries = db.translateQueries
-    override suspend fun getHistory(): CommonFlow<List<HistoryItem>> {
+
+    override fun getHistory(coroutineContext: CoroutineContext): Flow<List<HistoryItem>> {
         return queries
             .getHistory()
             .asFlow()
-            .mapToList(coroutineCtx)
+            .mapToList(coroutineContext)
             .map { history ->
                 history.map { it.toHistoryItem() }
             }
-            .toCommonFlow()
     }
 
     override suspend fun insertHistoryItem(item: HistoryItem) {
