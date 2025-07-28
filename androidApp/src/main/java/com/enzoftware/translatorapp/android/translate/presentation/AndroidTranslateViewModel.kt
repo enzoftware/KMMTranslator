@@ -7,11 +7,12 @@ import com.enzoftware.translatorapp.translate.domain.translate.TranslateUseCase
 import com.enzoftware.translatorapp.translate.presentation.TranslateEvent
 import com.enzoftware.translatorapp.translate.presentation.TranslateViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-@HiltViewModel
-class AndroidTranslateViewModel(
+@HiltViewModel()
+class AndroidTranslateViewModel @Inject constructor(
     private val translateUseCase: TranslateUseCase,
-    private val historyDataSource: HistoryDataSource
+    private val historyDataSource: HistoryDataSource,
 ) : ViewModel() {
     private val viewmodel by lazy {
         TranslateViewModel(
