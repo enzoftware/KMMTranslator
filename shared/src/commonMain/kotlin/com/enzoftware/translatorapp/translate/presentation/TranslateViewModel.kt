@@ -79,7 +79,6 @@ class TranslateViewModel(
                 }
             }
         }
-
     }
 
     fun onEvent(event: TranslateEvent) {
