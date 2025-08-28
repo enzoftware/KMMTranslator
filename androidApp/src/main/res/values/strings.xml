@@ -3,4 +3,9 @@
     <string name="close">Close\n</string>
     <string name="open">Open\n</string>
     <string name="swap_languages">Swap languages</string>
+    <string name="enter_text">Enter a text to translate</string>
+    <string name="translate">Translate</string>
+    <string name="copy">Copy</string>
+    <string name="speaker">Speaker</string>
+    <string name="translation_copied">Translation copied</string>
 </resources>
