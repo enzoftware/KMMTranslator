@@ -1,5 +1,6 @@
 package com.enzoftware.translatorapp.android.translate.presentation
 
+import android.speech.tts.TextToSpeech
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,8 +17,10 @@ import com.enzoftware.translatorapp.android.R
 import com.enzoftware.translatorapp.android.translate.presentation.components.LanguageDropDown
 import com.enzoftware.translatorapp.android.translate.presentation.components.SwapLanguageButton
 import com.enzoftware.translatorapp.android.translate.presentation.components.TranslateTextField
+import com.enzoftware.translatorapp.android.translate.presentation.components.rememberTextToSpeech
 import com.enzoftware.translatorapp.translate.presentation.TranslateEvent
 import com.enzoftware.translatorapp.translate.presentation.TranslateState
+import java.util.Locale
 
 @Composable
 fun TranslateScreen(
@@ -32,7 +35,7 @@ fun TranslateScreen(
         }
     ) { padding ->
         LazyColumn(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
@@ -81,6 +84,7 @@ fun TranslateScreen(
             item {
                 val clipboardManager = LocalClipboardManager.current
                 val keyboardController = LocalSoftwareKeyboardController.current
+                val tts = rememberTextToSpeech()
 
                 TranslateTextField(
                     fromText = state.fromText,
@@ -104,7 +108,8 @@ fun TranslateScreen(
                         onEvent(TranslateEvent.CloseTranslation)
                     },
                     onSpeakerClick = {
-
+                        tts.language = state.toLanguage.toLocale() ?: Locale.ENGLISH
+                        tts.speak(state.toText, TextToSpeech.QUEUE_FLUSH, null, null)
                     },
                     onTextFieldClick = {
                         onEvent(TranslateEvent.EditTranslation)
