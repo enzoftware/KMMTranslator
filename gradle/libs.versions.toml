@@ -1,5 +1,5 @@
 [versions]
-agp = "8.10.1"
+agp = "8.12.0"
 coilCompose = "2.6.0"
 kotlin = "2.1.21"
 junit = "4.13.2"
@@ -50,7 +50,6 @@ sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sq
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertK" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 test-runner = { module = "androidx.test:runner", version.ref = "testRunner" }
-test-rule = { group = "androidx.test", name = "rules", version.ref = "rules" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 [plugins]

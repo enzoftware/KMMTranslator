@@ -8,4 +8,10 @@
     <string name="copy">Copy</string>
     <string name="speaker">Speaker</string>
     <string name="translation_copied">Translation copied</string>
+    <string name="history">History</string>
+    <string name="error_service_unavailable">Oops, service Unavailable. Try again later</string>
+    <string name="error_client">Oops, Client Error, reach out service</string>
+    <string name="error_server">Oops, server side error. Wait for support</string>
+    <string name="error_unknown">Sorry, unknown error</string>
+    <string name="record_audio">Record audio</string>
 </resources>
