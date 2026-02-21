@@ -2,6 +2,7 @@ package com.enzoftware.translatorapp.translate.presentation
 
 import com.enzoftware.translatorapp.core.presentation.UiLanguage
 import com.enzoftware.translatorapp.core.util.Resource
+import com.enzoftware.translatorapp.core.util.toCommonStateFlow
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
 import com.enzoftware.translatorapp.translate.domain.translate.TranslateException
 import com.enzoftware.translatorapp.translate.domain.translate.TranslateUseCase
@@ -44,7 +45,7 @@ class TranslateViewModel(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         TranslateState()
-    )
+    ).toCommonStateFlow()
 
     private fun translate(state: TranslateState) {
         if (state.fromText.isBlank() || state.isTranslating) {
@@ -157,7 +158,7 @@ class TranslateViewModel(
      * If there is no "toText", it resets the translation state.
      */
     private fun onEditTranslation() {
-        if (state.value.toText != null) {
+        if (_state.value.toText != null) {
             _state.update {
                 it.copy(
                     toText = null,

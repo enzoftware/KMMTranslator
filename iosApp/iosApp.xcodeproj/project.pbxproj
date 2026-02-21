@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,13 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		4DA9FEA85FF45C78EB27113E /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C40B071FD4E83EA0F36F3D7 /* Pods_iosApp.framework */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		A420FCD22F47840600D43758 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A420FCD12F4783D500D43758 /* Colors.swift */; };
+		A47A50382F48B94C00153599 /* LanguageDropdownItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50372F48B94C00153599 /* LanguageDropdownItem.swift */; };
+		A47A503A2F48F8C600153599 /* LanguageDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50392F48F8C600153599 /* LanguageDropdown.swift */; };
+		A47A503C2F48FEAC00153599 /* SmallLanguageIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A503B2F48FEAC00153599 /* SmallLanguageIcon.swift */; };
+		A47A503E2F48FFD300153599 /* SwapLanguageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A503D2F48FFD300153599 /* SwapLanguageButton.swift */; };
+		A47A50402F4900FB00153599 /* TranslateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A503F2F4900FB00153599 /* TranslateViewModel.swift */; };
+		A47A50422F49011800153599 /* TranslateScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50412F49011800153599 /* TranslateScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +30,13 @@
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8C40B071FD4E83EA0F36F3D7 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E11C406010C9C58F115350F /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A420FCD12F4783D500D43758 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		A47A50372F48B94C00153599 /* LanguageDropdownItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDropdownItem.swift; sourceTree = "<group>"; };
+		A47A50392F48F8C600153599 /* LanguageDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDropdown.swift; sourceTree = "<group>"; };
+		A47A503B2F48FEAC00153599 /* SmallLanguageIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallLanguageIcon.swift; sourceTree = "<group>"; };
+		A47A503D2F48FFD300153599 /* SwapLanguageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapLanguageButton.swift; sourceTree = "<group>"; };
+		A47A503F2F4900FB00153599 /* TranslateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateViewModel.swift; sourceTree = "<group>"; };
+		A47A50412F49011800153599 /* TranslateScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateScreen.swift; sourceTree = "<group>"; };
 		F8CE67D4F4ED04B88D562F5D /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -75,6 +89,8 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				A47A50342F48B91C00153599 /* translate */,
+				A420FCCF2F4783C000D43758 /* core */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
@@ -84,13 +100,57 @@
 			path = iosApp;
 			sourceTree = "<group>";
 		};
+		A420FCCF2F4783C000D43758 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				A420FCD02F4783CA00D43758 /* presentation */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		A420FCD02F4783CA00D43758 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				A420FCD12F4783D500D43758 /* Colors.swift */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		A47A50342F48B91C00153599 /* translate */ = {
+			isa = PBXGroup;
+			children = (
+				A47A50352F48B92300153599 /* presentation */,
+			);
+			path = translate;
+			sourceTree = "<group>";
+		};
+		A47A50352F48B92300153599 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				A47A50362F48B92B00153599 /* components */,
+				A47A503F2F4900FB00153599 /* TranslateViewModel.swift */,
+				A47A50412F49011800153599 /* TranslateScreen.swift */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		A47A50362F48B92B00153599 /* components */ = {
+			isa = PBXGroup;
+			children = (
+				A47A50372F48B94C00153599 /* LanguageDropdownItem.swift */,
+				A47A50392F48F8C600153599 /* LanguageDropdown.swift */,
+				A47A503B2F48FEAC00153599 /* SmallLanguageIcon.swift */,
+				A47A503D2F48FFD300153599 /* SwapLanguageButton.swift */,
+			);
+			path = components;
+			sourceTree = "<group>";
+		};
 		C4E2CA508CF8BF407328149E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				8E11C406010C9C58F115350F /* Pods-iosApp.debug.xcconfig */,
 				F8CE67D4F4ED04B88D562F5D /* Pods-iosApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -102,9 +162,11 @@
 			buildConfigurationList = 7555FFA5242A565B00829871 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
 				1FB36282CD0F16BC72E3FFD2 /* [CP] Check Pods Manifest.lock */,
+				A47F90402F45502900402D46 /* ShellScript */,
 				7555FF77242A565900829871 /* Sources */,
 				7555FF79242A565900829871 /* Resources */,
 				39E07CC49A52C910B0C0E4D2 /* Frameworks */,
+				2FA1598F393616EA34D1D4E6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -183,6 +245,45 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		2FA1598F393616EA34D1D4E6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A47F90402F45502900402D46 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\ncd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -191,6 +292,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
+				A420FCD22F47840600D43758 /* Colors.swift in Sources */,
+				A47A503C2F48FEAC00153599 /* SmallLanguageIcon.swift in Sources */,
+				A47A503A2F48F8C600153599 /* LanguageDropdown.swift in Sources */,
+				A47A503E2F48FFD300153599 /* SwapLanguageButton.swift in Sources */,
+				A47A50402F4900FB00153599 /* TranslateViewModel.swift in Sources */,
+				A47A50382F48B94C00153599 /* LanguageDropdownItem.swift in Sources */,
+				A47A50422F49011800153599 /* TranslateScreen.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,12 +429,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = WC95P7CK74;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-framework",
+					"\"shared\"",
+					"-lsqlite3",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -342,12 +459,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = WC95P7CK74;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-framework",
+					"\"shared\"",
+					"-lsqlite3",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

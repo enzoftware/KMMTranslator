@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 actual open class CommonStateFlow<T> actual constructor(
-    private val flow: StateFlow<T>
+    private val flow: StateFlow<T>,
 ) : CommonFlow<T>(flow), StateFlow<T> by flow {
 
     override val value: T
@@ -16,6 +16,6 @@ actual open class CommonStateFlow<T> actual constructor(
         get() = flow.replayCache
 
     override suspend fun collect(collector: FlowCollector<T>): Nothing {
-        return flow.collect(collector)
+        flow.collect(collector)
     }
 }
