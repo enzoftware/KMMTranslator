@@ -17,7 +17,7 @@
 		A47A503A2F48F8C600153599 /* LanguageDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50392F48F8C600153599 /* LanguageDropdown.swift */; };
 		A47A503C2F48FEAC00153599 /* SmallLanguageIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A503B2F48FEAC00153599 /* SmallLanguageIcon.swift */; };
 		A47A503E2F48FFD300153599 /* SwapLanguageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A503D2F48FFD300153599 /* SwapLanguageButton.swift */; };
-		A47A50402F4900FB00153599 /* TranslateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A503F2F4900FB00153599 /* TranslateViewModel.swift */; };
+		A47A50402F4900FB00153599 /* IOSTranslateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A503F2F4900FB00153599 /* IOSTranslateViewModel.swift */; };
 		A47A50422F49011800153599 /* TranslateScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50412F49011800153599 /* TranslateScreen.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +35,7 @@
 		A47A50392F48F8C600153599 /* LanguageDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDropdown.swift; sourceTree = "<group>"; };
 		A47A503B2F48FEAC00153599 /* SmallLanguageIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallLanguageIcon.swift; sourceTree = "<group>"; };
 		A47A503D2F48FFD300153599 /* SwapLanguageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapLanguageButton.swift; sourceTree = "<group>"; };
-		A47A503F2F4900FB00153599 /* TranslateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateViewModel.swift; sourceTree = "<group>"; };
+		A47A503F2F4900FB00153599 /* IOSTranslateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSTranslateViewModel.swift; sourceTree = "<group>"; };
 		A47A50412F49011800153599 /* TranslateScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateScreen.swift; sourceTree = "<group>"; };
 		F8CE67D4F4ED04B88D562F5D /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -128,7 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				A47A50362F48B92B00153599 /* components */,
-				A47A503F2F4900FB00153599 /* TranslateViewModel.swift */,
+				A47A503F2F4900FB00153599 /* IOSTranslateViewModel.swift */,
 				A47A50412F49011800153599 /* TranslateScreen.swift */,
 			);
 			path = presentation;
@@ -296,7 +296,7 @@
 				A47A503C2F48FEAC00153599 /* SmallLanguageIcon.swift in Sources */,
 				A47A503A2F48F8C600153599 /* LanguageDropdown.swift in Sources */,
 				A47A503E2F48FFD300153599 /* SwapLanguageButton.swift in Sources */,
-				A47A50402F4900FB00153599 /* TranslateViewModel.swift in Sources */,
+				A47A50402F4900FB00153599 /* IOSTranslateViewModel.swift in Sources */,
 				A47A50382F48B94C00153599 /* LanguageDropdownItem.swift in Sources */,
 				A47A50422F49011800153599 /* TranslateScreen.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
