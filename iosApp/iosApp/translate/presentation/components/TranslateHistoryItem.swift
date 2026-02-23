@@ -52,8 +52,8 @@ struct TranslateHistoryItem: View {
     TranslateHistoryItem(
         item: UiHistoryItem(
             id: 0,
-            fromText: "hELLO",
-            toText: "hOLA",
+            fromText: "Hello",
+            toText: "Hola",
             fromLanguage: UiLanguage(language: .english, imagePath: "english"),
             toLanguage: UiLanguage(language: .spanish, imagePath: "spanish")),
             onClick: {
