@@ -10,9 +10,10 @@ import Foundation
 import shared
 
 extension TranslateScreen {
-    @MainActor class TranslateViewModel: ObservableObject {
+    @MainActor class IOSTranslateViewModel: ObservableObject {
         private var historyDataSource: HistoryDataSource
         private var translateUseCase: TranslateUseCase
+        
         private let viewModel : TranslateViewModel
         
         @Published var state: TranslateState = TranslateState(
@@ -27,24 +28,32 @@ extension TranslateScreen {
             history: []
         )
         
-        private var handle: DisposableHandle?
+        private var handle: (any Kotlinx_coroutines_coreDisposableHandle)?
         
         init(historyDataSource: HistoryDataSource, translateUseCase: TranslateUseCase) {
             self.historyDataSource = historyDataSource
             self.translateUseCase = translateUseCase
-            self.viewModel = TranslateViewModel(historyDataSource: historyDataSource, translateUseCase: translateUseCase)
+            self.viewModel = TranslateViewModel(
+                translateUseCase: translateUseCase,
+                historyDataSource: historyDataSource,
+                coroutineScope: nil,
+            )
         }
         
         func onEvent(event: TranslateEvent) {
-                   self.viewModel.onEvent(event: event)
-               }
+            self.viewModel.onEvent(event: event)
+        }
                
-               func startObserving() {
-                   handle = viewModel.state.collec
-               }
+       func startObserving() {
+           handle = viewModel.state.subscribe(onCollect: {state in
+               if let state = state {
+                    self.state = state
+                }
+           })
+       }
                
-               func dispose() {
-                   handle?.dispose()
-               }
+       func dispose() {
+           handle?.dispose()
+       }
     }
 }
