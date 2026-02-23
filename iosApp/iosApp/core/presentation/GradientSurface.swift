@@ -10,12 +10,12 @@ import SwiftUI
 
 struct GradientSurface: ViewModifier {
     @Environment(\.colorScheme) var colorScheme
-    
+
     func body(content: Content) -> some View {
         if colorScheme == .dark {
-            let gradientStart = Color(hex: 0xFF23262E)
-            let gradientEnd = Color(hex: 0xFF212329)
-            
+            let gradientStart = Color(hex: 0xFF23_262E)
+            let gradientEnd = Color(hex: 0xFF21_2329)
+
             content.background(
                 LinearGradient(
                     gradient: Gradient(colors: [gradientStart, gradientEnd]),
@@ -28,7 +28,6 @@ struct GradientSurface: ViewModifier {
         }
     }
 }
-
 
 extension View {
     func gradientSurface() -> some View {

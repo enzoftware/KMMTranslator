@@ -8,9 +8,10 @@
 
 import SwiftUI
 import shared
+
 struct LanguageDisplay: View {
     var language: UiLanguage
-    
+
     var body: some View {
         HStack {
             SmallLanguageIcon(language: language)
@@ -18,7 +19,7 @@ struct LanguageDisplay: View {
             Text(language.language.name)
                 .foregroundColor(.lightBlue)
         }
-        
+
     }
 }
 

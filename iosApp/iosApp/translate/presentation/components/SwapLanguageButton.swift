@@ -6,15 +6,14 @@
 //  Copyright © 2026 orgName. All rights reserved.
 //
 
-
 import SwiftUI
 
 struct SwapLanguageButton: View {
-    
+
     var onClick: () -> Void
-    
+
     var body: some View {
-        Button(action: onClick){
+        Button(action: onClick) {
             Image(uiImage: UIImage(named: "swap_languages")!)
                 .padding()
                 .background(Color.primaryColor)
@@ -26,7 +25,7 @@ struct SwapLanguageButton: View {
 #Preview {
     SwapLanguageButton(
         onClick: {
-            
+
         }
     )
 }

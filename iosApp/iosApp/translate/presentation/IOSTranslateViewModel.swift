@@ -13,24 +13,30 @@ extension TranslateScreen {
     @MainActor class IOSTranslateViewModel: ObservableObject {
         private var historyDataSource: HistoryDataSource
         private var translateUseCase: TranslateUseCase
-        
-        private let viewModel : TranslateViewModel
-        
+
+        private let viewModel: TranslateViewModel
+
         @Published var state: TranslateState = TranslateState(
             fromText: "",
             toText: nil,
             isTranslating: false,
-            fromLanguage: UiLanguage(language: .english, imagePath: "english.png"),
+            fromLanguage: UiLanguage(
+                language: .english,
+                imagePath: "english.png"
+            ),
             toLanguage: UiLanguage(language: .german, imagePath: "german"),
             isChoosingFromLanguage: false,
-            isChoosingToLanguage: false ,
+            isChoosingToLanguage: false,
             error: nil,
             history: []
         )
-        
+
         private var handle: (any Kotlinx_coroutines_coreDisposableHandle)?
-        
-        init(historyDataSource: HistoryDataSource, translateUseCase: TranslateUseCase) {
+
+        init(
+            historyDataSource: HistoryDataSource,
+            translateUseCase: TranslateUseCase
+        ) {
             self.historyDataSource = historyDataSource
             self.translateUseCase = translateUseCase
             self.viewModel = TranslateViewModel(
@@ -39,21 +45,21 @@ extension TranslateScreen {
                 coroutineScope: nil,
             )
         }
-        
+
         func onEvent(event: TranslateEvent) {
             self.viewModel.onEvent(event: event)
         }
-               
-       func startObserving() {
-           handle = viewModel.state.subscribe(onCollect: {state in
-               if let state = state {
+
+        func startObserving() {
+            handle = viewModel.state.subscribe(onCollect: { state in
+                if let state = state {
                     self.state = state
                 }
-           })
-       }
-               
-       func dispose() {
-           handle?.dispose()
-       }
+            })
+        }
+
+        func dispose() {
+            handle?.dispose()
+        }
     }
 }

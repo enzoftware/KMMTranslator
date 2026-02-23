@@ -13,24 +13,28 @@ struct LanguageDropdown: View {
     var language: UiLanguage
     var isOpen: Bool
     var selectedLanguage: (UiLanguage) -> Void
-    
+
     var body: some View {
         Menu {
             VStack {
-                ForEach(UiLanguage.Companion().allLanguages, id: \.self.language.code){ language in
+                ForEach(
+                    UiLanguage.Companion().allLanguages,
+                    id: \.self.language.code
+                ) { language in
                     LanguageDropdownItem(
-                        language: language, onClick: {
+                        language: language,
+                        onClick: {
                             selectedLanguage(language)
                         }
                     )
                 }
             }
         } label: {
-            HStack{
+            HStack {
                 SmallLanguageIcon(language: language)
                 Text(language.language.languageName)
                     .foregroundColor(.lightBlue)
-                Image(systemName:  isOpen ? "chevron.up" : "chevron.down")
+                Image(systemName: isOpen ? "chevron.up" : "chevron.down")
                     .foregroundColor(.lightBlue)
             }
         }
@@ -40,7 +44,7 @@ struct LanguageDropdown: View {
 #Preview {
     LanguageDropdown(
         language: UiLanguage(language: .german, imagePath: "german"),
-        isOpen : true,
+        isOpen: true,
         selectedLanguage: { language in }
     )
 }

@@ -11,7 +11,7 @@ import shared
 
 struct SmallLanguageIcon: View {
     var language: UiLanguage
-    
+
     var body: some View {
         Image(uiImage: UIImage(named: language.imagePath?.lowercased() ?? "")!)
             .resizable()
