@@ -94,7 +94,7 @@ extension TranslateTextField {
                     .padding(.bottom)
                 }
                 .onAppear {
-                    UITextField.appearance().backgroundColor = .clear
+                    UITextView.appearance().backgroundColor = .clear
                 }
         }
 
