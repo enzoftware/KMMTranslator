@@ -104,6 +104,8 @@ struct TranslateScreen: View {
                             )
                         }
                     )
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.background)
                 }
 
             }
