@@ -10,23 +10,25 @@ import SwiftUI
 import shared
 
 struct LanguageDropdownItem: View {
-    
+
     var language: UiLanguage
     var onClick: () -> Void
-    
+
     var body: some View {
         Button(action: onClick) {
             HStack {
-                
-                if let image = UIImage(named: (language.imagePath?.lowercased())!){
-                        Image(uiImage: image)
+
+                if let image = UIImage(
+                    named: (language.imagePath?.lowercased())!
+                ) {
+                    Image(uiImage: image)
                         .resizable()
                         .frame(width: 40, height: 40)
                         .padding(.trailing, 6)
                     Text(language.language.languageName)
                         .foregroundColor(.textBlack)
                 }
-                
+
             }
         }
     }
@@ -34,6 +36,7 @@ struct LanguageDropdownItem: View {
 
 #Preview {
     LanguageDropdownItem(
-        language: UiLanguage(language: .german, imagePath: "german"), onClick: { }
+        language: UiLanguage(language: .german, imagePath: "german"),
+        onClick: {}
     )
 }

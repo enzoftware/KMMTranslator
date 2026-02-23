@@ -10,19 +10,18 @@ import SwiftUI
 import shared
 
 struct ProgressButton: View {
-    
+
     var text: String
     var isLoading: Bool
     var onClick: () -> Void
-    
-    
+
     var body: some View {
         Button(action: {
             if !isLoading {
                 onClick()
             }
         }
-        ){
+        ) {
             if isLoading {
                 ProgressView()
                     .animation(.easeInOut, value: isLoading)
@@ -31,7 +30,7 @@ struct ProgressButton: View {
                     .cornerRadius(100)
                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
             } else {
-                
+
                 Text(text.uppercased())
                     .animation(.easeInOut, value: isLoading)
                     .padding(.horizontal)
@@ -46,6 +45,8 @@ struct ProgressButton: View {
 
 #Preview {
     ProgressButton(
-        text: "Translate", isLoading: false, onClick: {}
+        text: "Translate",
+        isLoading: false,
+        onClick: {}
     )
 }

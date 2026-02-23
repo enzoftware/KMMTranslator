@@ -10,18 +10,23 @@ import SwiftUI
 import shared
 
 struct TranslateScreen: View {
-    
+
     private var historyDataSource: HistoryDataSource
     private var translateUseCase: TranslateUseCase
     @ObservedObject var viewModel: IOSTranslateViewModel
-    
-    init(historyDataSource: HistoryDataSource, translateUseCase: TranslateUseCase) {
+
+    init(
+        historyDataSource: HistoryDataSource,
+        translateUseCase: TranslateUseCase
+    ) {
         self.historyDataSource = historyDataSource
         self.translateUseCase = translateUseCase
-        self.viewModel = IOSTranslateViewModel(historyDataSource: historyDataSource, translateUseCase: translateUseCase)
+        self.viewModel = IOSTranslateViewModel(
+            historyDataSource: historyDataSource,
+            translateUseCase: translateUseCase
+        )
     }
-    
-    
+
     var body: some View {
         ZStack {
             List {
@@ -30,13 +35,19 @@ struct TranslateScreen: View {
                         language: viewModel.state.fromLanguage,
                         isOpen: viewModel.state.isChoosingFromLanguage,
                         selectedLanguage: { language in
-                            viewModel.onEvent(event: TranslateEvent.ChooseFromLanguage(language: language))
+                            viewModel.onEvent(
+                                event: TranslateEvent.ChooseFromLanguage(
+                                    language: language
+                                )
+                            )
                         }
                     )
                     Spacer()
                     SwapLanguageButton(
                         onClick: {
-                            viewModel.onEvent(event: TranslateEvent.SwapLanguages())
+                            viewModel.onEvent(
+                                event: TranslateEvent.SwapLanguages()
+                            )
                         }
                     )
                     Spacer()
@@ -44,18 +55,24 @@ struct TranslateScreen: View {
                         language: viewModel.state.toLanguage,
                         isOpen: viewModel.state.isChoosingToLanguage,
                         selectedLanguage: { language in
-                            viewModel.onEvent(event: TranslateEvent.ChooseToLanguage(language: language))
+                            viewModel.onEvent(
+                                event: TranslateEvent.ChooseToLanguage(
+                                    language: language
+                                )
+                            )
                         }
                     )
                 }
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.background)
-                
+
                 TranslateTextField(
                     fromText: Binding(
-                        get: { viewModel.state.fromText},
+                        get: { viewModel.state.fromText },
                         set: { value in
-                            viewModel.onEvent(event: .ChangeTranslationText(text: value))
+                            viewModel.onEvent(
+                                event: .ChangeTranslationText(text: value)
+                            )
                         }
                     ),
                     toText: viewModel.state.toText,
@@ -68,8 +85,7 @@ struct TranslateScreen: View {
                 )
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.background)
-                
-                
+
                 if !viewModel.state.history.isEmpty {
                     Text("History")
                         .font(.title)
@@ -78,12 +94,14 @@ struct TranslateScreen: View {
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.background)
                 }
-                
+
                 ForEach(viewModel.state.history, id: \.self.id) { item in
                     TranslateHistoryItem(
                         item: item,
                         onClick: {
-                            viewModel.onEvent(event: .SelectHistoryItem(item: item))
+                            viewModel.onEvent(
+                                event: .SelectHistoryItem(item: item)
+                            )
                         }
                     )
                 }
@@ -91,13 +109,13 @@ struct TranslateScreen: View {
             }
             .listStyle(.plain)
             .buttonStyle(.plain)
-            
-            VStack{
+
+            VStack {
                 Spacer()
                 NavigationLink(
                     destination: Text("Voice to text screen")
-                ){
-                    ZStack{
+                ) {
+                    ZStack {
                         Circle()
                             .foregroundColor(.primaryColor)
                             .padding()
