@@ -24,6 +24,7 @@
 		A4FFAF322F4C111200488508 /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF312F4C111200488508 /* ProgressButton.swift */; };
 		A4FFAF342F4C12AA00488508 /* TranslateTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF332F4C12AA00488508 /* TranslateTextField.swift */; };
 		A4FFAF362F4C1CC700488508 /* TextToSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF352F4C1CC700488508 /* TextToSpeech.swift */; };
+		A4FFAF382F4C208200488508 /* TranslateHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF372F4C208200488508 /* TranslateHistoryItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		A4FFAF312F4C111200488508 /* ProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressButton.swift; sourceTree = "<group>"; };
 		A4FFAF332F4C12AA00488508 /* TranslateTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateTextField.swift; sourceTree = "<group>"; };
 		A4FFAF352F4C1CC700488508 /* TextToSpeech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextToSpeech.swift; sourceTree = "<group>"; };
+		A4FFAF372F4C208200488508 /* TranslateHistoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateHistoryItem.swift; sourceTree = "<group>"; };
 		F8CE67D4F4ED04B88D562F5D /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -156,6 +158,7 @@
 				A4FFAF312F4C111200488508 /* ProgressButton.swift */,
 				A4FFAF332F4C12AA00488508 /* TranslateTextField.swift */,
 				A4FFAF352F4C1CC700488508 /* TextToSpeech.swift */,
+				A4FFAF372F4C208200488508 /* TranslateHistoryItem.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 				A47A50422F49011800153599 /* TranslateScreen.swift in Sources */,
 				A4FFAF362F4C1CC700488508 /* TextToSpeech.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				A4FFAF382F4C208200488508 /* TranslateHistoryItem.swift in Sources */,
 				A4FFAF342F4C12AA00488508 /* TranslateTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
