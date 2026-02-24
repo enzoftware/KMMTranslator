@@ -25,6 +25,7 @@
 		A4FFAF342F4C12AA00488508 /* TranslateTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF332F4C12AA00488508 /* TranslateTextField.swift */; };
 		A4FFAF362F4C1CC700488508 /* TextToSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF352F4C1CC700488508 /* TextToSpeech.swift */; };
 		A4FFAF382F4C208200488508 /* TranslateHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF372F4C208200488508 /* TranslateHistoryItem.swift */; };
+		A4FFAF3D2F4D2E4800488508 /* IOSVoiceToTextParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF3C2F4D2E3300488508 /* IOSVoiceToTextParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		A4FFAF332F4C12AA00488508 /* TranslateTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateTextField.swift; sourceTree = "<group>"; };
 		A4FFAF352F4C1CC700488508 /* TextToSpeech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextToSpeech.swift; sourceTree = "<group>"; };
 		A4FFAF372F4C208200488508 /* TranslateHistoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslateHistoryItem.swift; sourceTree = "<group>"; };
+		A4FFAF3C2F4D2E3300488508 /* IOSVoiceToTextParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSVoiceToTextParser.swift; sourceTree = "<group>"; };
 		F8CE67D4F4ED04B88D562F5D /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -101,6 +103,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				A4FFAF392F4D2E0400488508 /* voice_to_text */,
 				A47A50342F48B91C00153599 /* translate */,
 				A420FCCF2F4783C000D43758 /* core */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
@@ -161,6 +164,30 @@
 				A4FFAF372F4C208200488508 /* TranslateHistoryItem.swift */,
 			);
 			path = components;
+			sourceTree = "<group>";
+		};
+		A4FFAF392F4D2E0400488508 /* voice_to_text */ = {
+			isa = PBXGroup;
+			children = (
+				A4FFAF3B2F4D2E2C00488508 /* domain */,
+				A4FFAF3A2F4D2E1900488508 /* presentation */,
+			);
+			path = voice_to_text;
+			sourceTree = "<group>";
+		};
+		A4FFAF3A2F4D2E1900488508 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		A4FFAF3B2F4D2E2C00488508 /* domain */ = {
+			isa = PBXGroup;
+			children = (
+				A4FFAF3C2F4D2E3300488508 /* IOSVoiceToTextParser.swift */,
+			);
+			path = domain;
 			sourceTree = "<group>";
 		};
 		C4E2CA508CF8BF407328149E /* Pods */ = {
@@ -320,6 +347,7 @@
 				A47A50402F4900FB00153599 /* IOSTranslateViewModel.swift in Sources */,
 				A47A50382F48B94C00153599 /* LanguageDropdownItem.swift in Sources */,
 				A47A50422F49011800153599 /* TranslateScreen.swift in Sources */,
+				A4FFAF3D2F4D2E4800488508 /* IOSVoiceToTextParser.swift in Sources */,
 				A4FFAF362F4C1CC700488508 /* TextToSpeech.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				A4FFAF382F4C208200488508 /* TranslateHistoryItem.swift in Sources */,

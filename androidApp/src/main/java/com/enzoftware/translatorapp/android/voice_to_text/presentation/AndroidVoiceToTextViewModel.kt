@@ -25,4 +25,9 @@ class AndroidVoiceToTextViewModel @Inject constructor(
     fun onEvent(voiceToTextEvent: VoiceToTextEvent) {
         viewModel.onEvent(voiceToTextEvent)
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        voiceToTextParser.stopListening()
+    }
 }

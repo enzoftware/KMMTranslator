@@ -19,7 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enzoftware.translatorapp.android.TranslatorAppTheme
 import com.enzoftware.translatorapp.android.translate.presentation.components.gradientSurface
-import java.util.*
+import kotlin.random.Random
+
 
 @Composable
 fun VoiceRecorderDisplay(
@@ -53,7 +54,7 @@ fun VoiceRecorderDisplay(
                             drawRoundRect(
                                 color = primary,
                                 topLeft = Offset(
-                                    x = size.width - index * 2 * powerRatioWidth,
+                                    x = (size.width + 1) - index * 2 * powerRatioWidth,
                                     y = yTopStart
                                 ),
                                 size = Size(
@@ -76,7 +77,7 @@ fun VoiceRecorderDisplayPreview(modifier: Modifier = Modifier) {
     TranslatorAppTheme {
         VoiceRecorderDisplay(
             powerRatios = (0..80).map {
-                Random().nextFloat()
+                Random.nextFloat()
             },
             modifier = Modifier
                 .fillMaxWidth()

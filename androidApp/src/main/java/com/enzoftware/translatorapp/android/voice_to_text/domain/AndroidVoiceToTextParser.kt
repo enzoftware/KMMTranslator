@@ -69,7 +69,10 @@ class AndroidVoiceToTextParser(
     override fun onBeginningOfSpeech() = Unit
 
     override fun onRmsChanged(rmsdB: Float) {
-        _state.update { it.copy(powerRatio = rmsdB * (1f / 12f - (-2f))) }
+        _state.update {
+            val normalized = ((rmsdB + 2f) / 12f).coerceIn(0f, 1f)
+            it.copy(powerRatio = normalized)
+        }
     }
 
     override fun onBufferReceived(buffer: ByteArray?) = Unit
@@ -82,10 +85,11 @@ class AndroidVoiceToTextParser(
 
     override fun onError(error: Int) {
         if (error == ERROR_CLIENT) {
+            _state.update { it.copy(isSpeaking = false) }
             return
         }
         _state.update {
-            it.copy(error = "Error: $error")
+            it.copy(error = app.getString(R.string.unknown_error), isSpeaking = false)
         }
     }
 

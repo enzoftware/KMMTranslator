@@ -4,10 +4,12 @@ import com.enzoftware.translatorapp.core.util.toCommonStateFlow
 import com.enzoftware.translatorapp.voice_to_text.domain.VoiceToTextParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class VoiceToTextViewModel(
     private val voiceToTextParser: VoiceToTextParser,
     coroutineScope: CoroutineScope? = null,
@@ -40,16 +42,26 @@ class VoiceToTextViewModel(
 
     init {
         viewModelScope.launch {
-            while (true) {
-                if (state.value.displayState == DisplayState.SPEAKING) {
-                    _state.update {
-                        it.copy(
-                            powerRatios = it.powerRatios + voiceToTextParser.state.value.powerRatio
+//            while (true) {
+//                if (state.value.displayState == DisplayState.SPEAKING) {
+//                    _state.update {
+//                        it.copy(
+//                            powerRatios = it.powerRatios + voiceToTextParser.state.value.powerRatio
+//                        )
+//                    }
+//                }
+//                delay(50L)
+//            }
+            voiceToTextParser.state
+                .filter { it.isSpeaking }
+                .sample(50L)
+                .collect { voiceResult ->
+                    _state.update { currentState ->
+                        currentState.copy(
+                            powerRatios = currentState.powerRatios + voiceResult.powerRatio
                         )
                     }
                 }
-                delay(50L)
-            }
         }
     }
 
@@ -63,15 +75,18 @@ class VoiceToTextViewModel(
     }
 
     private fun onToggleRecording(language: String) {
+        val wasSpeaking = state.value.displayState == DisplayState.SPEAKING
+
         _state.update {
             it.copy(
                 powerRatios = emptyList(),
             )
         }
-        voiceToTextParser.cancel()
-        if (state.value.displayState == DisplayState.SPEAKING) {
+
+        if (wasSpeaking) {
             voiceToTextParser.stopListening()
         } else {
+            voiceToTextParser.cancel()
             voiceToTextParser.startListening(language)
         }
     }
@@ -92,5 +107,6 @@ class VoiceToTextViewModel(
             VoiceToTextState()
         }
     }
+
 
 }

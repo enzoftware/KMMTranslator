@@ -58,8 +58,10 @@ fun TranslateRoot() {
                 .collectAsState()
 
             LaunchedEffect(voiceResult) {
-                viewModel.onEvent(TranslateEvent.SubmitVoiceResult(voiceResult))
-                it.savedStateHandle["voiceResult"] = null
+                voiceResult?.let { result ->
+                    viewModel.onEvent(TranslateEvent.SubmitVoiceResult(result))
+                    it.savedStateHandle["voiceResult"] = null
+                }
             }
 
             TranslateScreen(
