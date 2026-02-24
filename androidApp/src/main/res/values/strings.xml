@@ -14,7 +14,7 @@
     <string name="error_server">Oops, server side error. Wait for support</string>
     <string name="error_unknown">Sorry, unknown error</string>
     <string name="record_audio">Record audio</string>
-    <string name="error_speech_not_available">Translate not available\n</string>
+    <string name="error_speech_not_available">Speech recognition not available</string>
     <string name="stop_recording">Stop recording</string>
     <string name="apply">Apply</string>
     <string name="record_again">Record again</string>
