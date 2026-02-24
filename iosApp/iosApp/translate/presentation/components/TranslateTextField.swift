@@ -82,6 +82,7 @@ extension TranslateTextField {
                 )
                 .padding()
                 .foregroundColor(Color.onSurface)
+                .background(Color.surface) // Add explicit background
                 .overlay(alignment: .bottomTrailing) {
                     ProgressButton(
                         text: "Translate",
@@ -92,9 +93,6 @@ extension TranslateTextField {
                     )
                     .padding(.trailing)
                     .padding(.bottom)
-                }
-                .onAppear {
-                    UITextView.appearance().backgroundColor = .clear
                 }
         }
 
