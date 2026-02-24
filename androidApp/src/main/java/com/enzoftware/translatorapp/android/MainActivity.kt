@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,7 +44,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TranslateRoot(modifier: Modifier = Modifier) {
+fun TranslateRoot() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -69,7 +68,7 @@ fun TranslateRoot(modifier: Modifier = Modifier) {
                     when (event) {
                         is TranslateEvent.RecordAudio -> {
                             navController.navigate(
-                                Routes.VOICE_TO_TEXT + "/{${state.fromLanguage.language.code}}"
+                                Routes.VOICE_TO_TEXT + "/${state.fromLanguage.language.code}"
                             )
                         }
 
@@ -99,6 +98,7 @@ fun TranslateRoot(modifier: Modifier = Modifier) {
                     navController.previousBackStackEntry?.savedStateHandle?.set(
                         "voiceResult", result
                     )
+                    navController.popBackStack()
                 },
                 onEvent = { event ->
                     when (event) {

@@ -47,8 +47,8 @@ class VoiceToTextViewModel(
                             powerRatios = it.powerRatios + voiceToTextParser.state.value.powerRatio
                         )
                     }
-                    delay(50L)
                 }
+                delay(50L)
             }
         }
     }

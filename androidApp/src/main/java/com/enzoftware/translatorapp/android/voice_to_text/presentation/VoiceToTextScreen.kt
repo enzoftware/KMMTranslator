@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,14 +45,14 @@ fun VoiceToTextScreen(
             onEvent(
                 VoiceToTextEvent.PermissionResult(
                     isGranted = isGranted,
-                    isPermanentDeclined = !isGranted && !(context as ComponentActivity)
-                        .shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)
+                    isPermanentDeclined = !isGranted && !((context as? ComponentActivity)
+                        ?.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) ?: false)
                 )
             )
         }
     )
 
-    LaunchedEffect(recordAudioLauncher) {
+    LaunchedEffect(Unit) {
         recordAudioLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
 
