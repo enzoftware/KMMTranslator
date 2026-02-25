@@ -32,12 +32,6 @@ import shared
             voiceToTextParser: voiceToTextParser,
             coroutineScope: nil
         )
-        self.viewModel.onEvent(
-            event: VoiceToTextEvent.PermissionResult(
-                isGranted: true,
-                isPermanentDeclined: false
-            )
-        )
     }
 
     func onEvent(event: VoiceToTextEvent) {
@@ -45,6 +39,12 @@ import shared
     }
 
     func startObserving() {
+        self.viewModel.onEvent(
+            event: VoiceToTextEvent.PermissionResult(
+                isGranted: true,
+                isPermanentDeclined: false
+            )
+        )
         handle = viewModel.state.subscribe { [weak self] state in
             if let state {
                 self?.state = state
