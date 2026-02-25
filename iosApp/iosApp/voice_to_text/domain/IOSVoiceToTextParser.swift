@@ -83,16 +83,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
                     return
                 }
 
-                if result.isFinal {
-                    self?.updateStete(
-                        result: result.bestTranscription.formattedString
-                    )
-                } else {
-                    // Update with partial results for better UX
-                    self?.updateStete(
-                        result: result.bestTranscription.formattedString
-                    )
-                }
+                self?.updateStete(result: result.bestTranscription.formattedString)
             }
 
             self?.audioEngine = AVAudioEngine()
