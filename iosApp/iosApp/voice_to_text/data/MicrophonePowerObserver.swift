@@ -21,6 +21,7 @@ class MicrophonePowerObserver: ObservableObject {
     private let powerRatioEmissionPerSecond = 20.0
 
     func startObserving() {
+        release()
         do {
             let recorderSettings = [
                 AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
