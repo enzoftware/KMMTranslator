@@ -45,7 +45,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Speech recogntion for voice to text feature</string>
+	<string>Speech recognition is used for the voice-to-text feature.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 </dict>
