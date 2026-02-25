@@ -31,7 +31,7 @@ struct VoiceRecorderDisplay: View {
                 var path = Path()
                 path.addRoundedRect(
                     in: CGRect(
-                        x: CGFloat(size.width) - CGFloat(index) * 2.0
+                        x: CGFloat(size.width) - barWidth - CGFloat(index) * 2.0
                             * barWidth,
                         y: yTopStart,
                         width: barWidth,
