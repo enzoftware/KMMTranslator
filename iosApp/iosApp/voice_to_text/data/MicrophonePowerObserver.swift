@@ -40,7 +40,12 @@ class MicrophonePowerObserver: ObservableObject {
                 settings: recorderSettings
             )
             recorder.isMeteringEnabled = true
-            recorder.record()
+            guard recorder.record() else {
+                print(
+                    "Failed to start microphone recording."
+                )
+                return
+            }
             self.audioRecorder = recorder
 
             self.cancellable = Timer.publish(
