@@ -39,7 +39,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     private var audioSession: AVAudioSession?
 
     func cancel() {
-        // not needed on iOS
+        stopListening()
     }
 
     func reset() {
