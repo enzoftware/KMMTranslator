@@ -35,6 +35,7 @@ struct ProgressButton: View {
                     .animation(.easeInOut, value: isLoading)
                     .padding(.horizontal)
                     .padding(.vertical, 5)
+                    .cornerRadius(20)
                     .font(.body.weight(.bold))
                     .background(Color.primaryColor)
                     .foregroundColor(Color.onPrimary)
