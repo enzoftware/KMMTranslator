@@ -20,6 +20,13 @@ class MicrophonePowerObserver: ObservableObject {
 
     private let powerRatioEmissionPerSecond = 20.0
 
+    let tempFile = FileManager.default.temporaryDirectory
+        .appendingPathComponent("recording.m4a")
+
+    deinit {
+        release()
+    }
+
     func startObserving() {
         release()
         do {
@@ -27,8 +34,9 @@ class MicrophonePowerObserver: ObservableObject {
                 AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
                 AVNumberOfChannelsKey: 1,
             ]
+
             let recorder = try AVAudioRecorder(
-                url: URL(fileURLWithPath: "/dev/null", isDirectory: true),
+                url: tempFile,
                 settings: recorderSettings
             )
             recorder.isMeteringEnabled = true
@@ -59,11 +67,12 @@ class MicrophonePowerObserver: ObservableObject {
             )
         }
     }
-    
+
     func release() {
         cancellable = nil
         audioRecorder?.stop()
         audioRecorder = nil
         micPowerRatio = 0.0
+        try? FileManager.default.removeItem(at: tempFile)
     }
 }

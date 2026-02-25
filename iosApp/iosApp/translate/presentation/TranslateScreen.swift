@@ -12,9 +12,11 @@ import shared
 struct TranslateScreen: View {
 
     private var historyDataSource: HistoryDataSource
+    @StateObject private var voiceToTextParser = IOSVoiceToTextParser()
     private var translateUseCase: TranslateUseCase
     @ObservedObject var viewModel: IOSTranslateViewModel
-    `@StateObject` private var voiceToTextParser = IOSVoiceToTextParser()
+    
+    
 
     init(
         historyDataSource: HistoryDataSource,
