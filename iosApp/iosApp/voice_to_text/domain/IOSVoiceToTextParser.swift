@@ -166,15 +166,20 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
 
     func stopListening() {
         self.updateStete(isSpeaking: false)
+        micPowerCancelable?.cancel()
         micPowerCancelable = nil
         micObserver.release()
+        recognitionTask?.cancel()
+        recognitionTask = nil
 
         audioBufferRequest?.endAudio()
         audioBufferRequest = nil
 
         audioEngine?.stop()
+        audioEngine = nil
 
         inputNode?.removeTap(onBus: 0)
+        inputNode = nil
 
         try? audioSession?.setActive(false)
         audioSession = nil
