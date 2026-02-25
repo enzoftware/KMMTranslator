@@ -14,7 +14,7 @@ struct TranslateScreen: View {
     private var historyDataSource: HistoryDataSource
     private var translateUseCase: TranslateUseCase
     @ObservedObject var viewModel: IOSTranslateViewModel
-    private let voiceToTextParser = IOSVoiceToTextParser()
+    `@StateObject` private var voiceToTextParser = IOSVoiceToTextParser()
 
     init(
         historyDataSource: HistoryDataSource,
