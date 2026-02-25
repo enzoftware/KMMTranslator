@@ -156,6 +156,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
                     self?.updateStete(powerRatio: ratio)
                 }
             } catch {
+                self?.stopListening()
                 self?.updateStete(
                     error: error.localizedDescription,
                     isSpeaking: false
