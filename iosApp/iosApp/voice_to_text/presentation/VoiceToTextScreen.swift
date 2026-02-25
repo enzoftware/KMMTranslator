@@ -104,7 +104,9 @@ struct VoiceToTextScreen: View {
             case .speaking:
                 return AnyView(
                     VoiceRecorderDisplay(
-                        powerRatios: viewModel.state.powerRatios as! [Double]
+                        powerRatios: viewModel.state.powerRatios.map { ratio in
+                            Double.init(truncating: ratio)
+                        }
                     )
                     .frame(maxHeight: 100.0)
                     .padding()

@@ -29,14 +29,15 @@ struct VoiceRecorderButton: View {
         .frame(maxWidth: 100, maxHeight: 100)
     }
 
-    var icon: some View {
+    @ViewBuilder
+    private var icon: some View {
         switch displayState {
         case .speaking:
-            return Image(systemName: "stop.fill")
+            Image(systemName: "stop.fill")
         case .displayingResults:
-            return Image(systemName: "checkmark")
+            Image(systemName: "checkmark")
         default:
-            return Image(uiImage: UIImage(named: "mic")!)
+            Image(uiImage: UIImage(named: "mic")!)
 
         }
     }

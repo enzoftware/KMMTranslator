@@ -22,6 +22,7 @@ import shared
         recordErrorText: nil,
         displayState: nil
     )
+    
 
     private var handle: (any Kotlinx_coroutines_coreDisposableHandle)?
 
@@ -39,6 +40,7 @@ import shared
     }
 
     func startObserving() {
+        handle?.dispose()
         self.viewModel.onEvent(
             event: VoiceToTextEvent.PermissionResult(
                 isGranted: true,

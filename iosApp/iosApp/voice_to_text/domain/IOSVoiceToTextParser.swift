@@ -36,7 +36,11 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     private var inputNode: AVAudioInputNode?
     private var audioBufferRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
-    private var audioSession: AVAudioSession?
+    private var audioSession: AVAudioSession = AVAudioSession.sharedInstance()
+    
+    deinit {
+        stopListening()
+    }
 
     func cancel() {
         stopListening()
@@ -53,21 +57,20 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     }
 
     func startListening(languageCode: String) {
-        updateStete(error: nil)
+        updateState(error: nil)
 
-        let choosenLocale = Locale.init(identifier: languageCode)
+        let choosenLocale = Locale(identifier: languageCode)
         let supportedLocale =
             SFSpeechRecognizer.supportedLocales().contains(choosenLocale)
-            ? choosenLocale : Locale.init(identifier: "en-US")
+            ? choosenLocale : Locale(identifier: "en-US")
 
         self.recognizer = SFSpeechRecognizer(locale: supportedLocale)
 
         guard recognizer?.isAvailable == true else {
-            updateStete(error: "Speech recognizer is not available")
+            updateState(error: "Speech recognizer is not available")
             return
         }
 
-        audioSession = AVAudioSession.sharedInstance()
         self.requestPermissions { [weak self] in
             self?.audioBufferRequest = SFSpeechAudioBufferRecognitionRequest()
 
@@ -79,17 +82,17 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
                 with: audioBufferRequest
             ) { [weak self] (result, error) in
                 guard let result = result else {
-                    self?.updateStete(error: error?.localizedDescription)
+                    self?.updateState(error: error?.localizedDescription)
                     return
                 }
 
                 if result.isFinal {
-                    self?.updateStete(
+                    self?.updateState(
                         result: result.bestTranscription.formattedString
                     )
                 } else {
                     // Update with partial results for better UX
-                    self?.updateStete(
+                    self?.updateState(
                         result: result.bestTranscription.formattedString
                     )
                 }
@@ -99,7 +102,8 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
             self?.inputNode = self?.audioEngine?.inputNode
 
             guard let inputNode = self?.inputNode else {
-                self?.updateStete(error: "Failed to get audio input node")
+                self?.stopListening()
+                self?.updateState(error: "Failed to get audio input node")
                 return
             }
 
@@ -111,19 +115,21 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
                 recordingFormat.sampleRate > 0
                     && recordingFormat.channelCount > 0
             else {
-                self?.updateStete(
+                self?.updateState(
                     error:
                         "Invalid audio format from input node - please test on a physical device"
                 )
+                self?.stopListening()
                 return
             }
 
             // Additional validation for common audio format issues
             guard recordingFormat.commonFormat != .otherFormat else {
-                self?.updateStete(
+                self?.updateState(
                     error:
                         "Unsupported audio format - please test on a physical device"
                 )
+                self?.stopListening()
                 return
             }
 
@@ -135,29 +141,28 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
                 self?.audioBufferRequest?.append(buffer)
             }
 
-            self?.audioEngine?.prepare()
-
             do {
-                try self?.audioSession?.setCategory(
+                try self?.audioSession.setCategory(
                     .playAndRecord,
                     mode: .spokenAudio,
                     options: .duckOthers
                 )
-                try self?.audioSession?.setActive(
+                try self?.audioSession.setActive(
                     true,
                     options: .notifyOthersOnDeactivation
                 )
+                self?.audioEngine?.prepare()
 
                 self?.micObserver.startObserving()
                 try self?.audioEngine?.start()
-                self?.updateStete(isSpeaking: true)
+                self?.updateState(isSpeaking: true)
                 self?.micPowerCancelable = self?.micPowerRatio.sink {
                     [weak self] ratio in
-                    self?.updateStete(powerRatio: ratio)
+                    self?.updateState(powerRatio: ratio)
                 }
             } catch {
                 self?.stopListening()
-                self?.updateStete(
+                self?.updateState(
                     error: error.localizedDescription,
                     isSpeaking: false
                 )
@@ -166,7 +171,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     }
 
     func stopListening() {
-        self.updateStete(isSpeaking: false)
+        self.updateState(isSpeaking: false)
         micPowerCancelable?.cancel()
         micPowerCancelable = nil
         micObserver.release()
@@ -177,19 +182,18 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
         audioBufferRequest = nil
 
         audioEngine?.stop()
-        audioEngine = nil
 
         inputNode?.removeTap(onBus: 0)
+        audioEngine = nil
         inputNode = nil
 
-        try? audioSession?.setActive(false)
-        audioSession = nil
+        try? audioSession.setActive(false)
     }
 
     private func requestPermissions(onGranted: @escaping () -> Void) {
-        audioSession?.requestRecordPermission { [weak self] wasGranted in
+        audioSession.requestRecordPermission { [weak self] wasGranted in
             if !wasGranted {
-                self?.updateStete(
+                self?.updateState(
                     error: "You need to grant permission to record your voice."
                 )
                 self?.stopListening()
@@ -199,7 +203,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
             SFSpeechRecognizer.requestAuthorization { [weak self] status in
                 DispatchQueue.main.async {
                     if status != .authorized {
-                        self?.updateStete(
+                        self?.updateState(
                             error:
                                 "You need to grant permission to transcribe audio."
                         )
@@ -214,7 +218,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
         }
     }
 
-    private func updateStete(
+    private func updateState(
         result: String? = nil,
         error: String? = nil,
         powerRatio: CGFloat? = nil,
