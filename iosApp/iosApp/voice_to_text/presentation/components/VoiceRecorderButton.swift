@@ -19,7 +19,7 @@ struct VoiceRecorderButton: View {
             ZStack {
 
                 Circle()
-                    .foregroundColor(.primary)
+                    .foregroundColor(.primaryColor)
                     .padding()
 
                 icon
