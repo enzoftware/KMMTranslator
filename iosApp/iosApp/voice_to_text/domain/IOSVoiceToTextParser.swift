@@ -37,7 +37,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     private var audioBufferRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private var audioSession: AVAudioSession = AVAudioSession.sharedInstance()
-    
+
     deinit {
         stopListening()
     }
@@ -86,16 +86,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
                     return
                 }
 
-                if result.isFinal {
-                    self?.updateState(
-                        result: result.bestTranscription.formattedString
-                    )
-                } else {
-                    // Update with partial results for better UX
-                    self?.updateState(
-                        result: result.bestTranscription.formattedString
-                    )
-                }
+                self?.updateStete(result: result.bestTranscription.formattedString)
             }
 
             self?.audioEngine = AVAudioEngine()
