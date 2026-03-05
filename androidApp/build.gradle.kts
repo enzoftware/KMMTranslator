@@ -16,6 +16,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "com.enzoftware.translatorapp.TestHiltRunner"
     }
     buildFeatures {
         compose = true
@@ -69,7 +70,9 @@ dependencies {
     androidTestImplementation(libs.test.runner)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.android.rules)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
 
 
     kspAndroidTest(libs.hilt.android.compiler)
