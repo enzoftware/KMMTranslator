@@ -151,7 +151,7 @@ fun TranslateScreen(
             }
 
             item {
-                if (state.history.isNotEmpty()) {
+                if (state.history.isNotEmpty() && state.toText == null) {
                     Text(
                         text = context.getString(R.string.history),
                         style = MaterialTheme.typography.titleLarge,
