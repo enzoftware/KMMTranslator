@@ -5,9 +5,9 @@ import com.enzoftware.translatorapp.core.domain.language.Language
 import com.enzoftware.translatorapp.R
 import java.util.Locale
 
-actual class UiLanguage(
+actual data class UiLanguage(
     @DrawableRes val drawableRes: Int,
-    actual val language: Language
+    actual val language: Language,
 ) {
     fun toLocale(): Locale? {
         return when (language) {
@@ -21,15 +21,18 @@ actual class UiLanguage(
             else -> null
         }
     }
+
     actual companion object {
         actual fun byCode(code: String): UiLanguage {
-            return allLanguages.find { it.language.code == code } ?: throw IllegalArgumentException("No language with code $code")
+            return allLanguages.find { it.language.code == code }
+                ?: throw IllegalArgumentException("No language with code $code")
         }
+
         actual val allLanguages: List<UiLanguage>
             get() = Language.entries.map { language ->
                 UiLanguage(
                     language = language,
-                    drawableRes = when(language) {
+                    drawableRes = when (language) {
                         Language.ENGLISH -> R.drawable.english
                         Language.ARABIC -> R.drawable.arabic
                         Language.AZERBAIJANI -> R.drawable.azerbaijani

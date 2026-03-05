@@ -3,6 +3,8 @@ package com.enzoftware.translatorapp.translate.data.history
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.enzoftware.translatorapp.TranslatorDatabase
+import com.enzoftware.translatorapp.core.util.CommonFlow
+import com.enzoftware.translatorapp.core.util.toCommonFlow
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
 import com.enzoftware.translatorapp.translate.domain.history.HistoryItem
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +19,7 @@ class SqlDelightHistoryDataSource(
 ) : HistoryDataSource {
     private val queries = db.translateQueries
 
-    override fun getHistory(coroutineContext: CoroutineContext): Flow<List<HistoryItem>> {
+    override fun getHistory(coroutineContext: CoroutineContext): CommonFlow<List<HistoryItem>> {
         return queries
             .getHistory()
             .asFlow()
@@ -25,6 +27,7 @@ class SqlDelightHistoryDataSource(
             .map { history ->
                 history.map { it.toHistoryItem() }
             }
+            .toCommonFlow()
     }
 
     override suspend fun insertHistoryItem(item: HistoryItem) {

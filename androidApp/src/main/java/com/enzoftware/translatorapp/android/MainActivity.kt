@@ -63,7 +63,6 @@ fun TranslateRoot() {
                     it.savedStateHandle["voiceResult"] = null
                 }
             }
-
             TranslateScreen(
                 state = state,
                 onEvent = { event ->
