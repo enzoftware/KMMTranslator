@@ -51,7 +51,7 @@ assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assert
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 test-runner = { module = "androidx.test:runner", version.ref = "testRunner" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-android-rules = { module = "androidx.test:rules", version = "1.7.0" }
+android-rules = { module = "androidx.test:rules", version.ref = "rules" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
