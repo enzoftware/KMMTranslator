@@ -17,6 +17,13 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        let store = SettingsStore(
+            userDefaults: UserDefaults(suiteName: "ContentViewPreview") ?? .standard
+        )
+        NavigationStack {
+            ContentView()
+        }
+        .environmentObject(store)
+        .preferredColorScheme(store.theme.colorScheme)
     }
 }

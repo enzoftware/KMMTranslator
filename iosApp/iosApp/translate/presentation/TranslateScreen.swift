@@ -14,6 +14,7 @@ struct TranslateScreen: View {
     @StateObject private var voiceToTextParser = IOSVoiceToTextParser()
     private var translateUseCase: TranslateUseCase
     @ObservedObject var viewModel: IOSTranslateViewModel
+    @EnvironmentObject private var settingsStore: SettingsStore
 
     @Namespace private var voiceNamespace
 
@@ -97,33 +98,57 @@ struct TranslateScreen: View {
     }
 
     private var headerSection: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Translator")
+                Text(settingsStore.versionInfo.appName)
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
                     .foregroundStyle(CozyTheme.Colors.inkPrimary)
 
-                Text("Warm notes across languages")
-                    .font(.subheadline)
-                    .foregroundStyle(CozyTheme.Colors.inkSecondary)
+                Text(
+                    settingsStore.trimmedUserName.isEmpty
+                        ? "Warm notes for all your yapping"
+                        : "Hey \(settingsStore.trimmedUserName), ready to translate?"
+                )
+                .font(.subheadline)
+                .foregroundStyle(CozyTheme.Colors.inkSecondary)
+                .contentTransition(.interpolate)
             }
 
             Spacer()
 
-            HStack(spacing: 5) {
-                Image(systemName: "character.book.closed.fill")
-                    .font(.caption.weight(.semibold))
-                Text("\(viewModel.state.history.count)")
-                    .font(.caption.weight(.bold))
-                    .contentTransition(.numericText())
+            CozyGlassContainer(spacing: 8) {
+                HStack(spacing: 8) {
+                    Button {
+                        withAnimation(CozyTheme.Motion.cozySpring) {
+                            settingsStore.toggleTheme()
+                        }
+                    } label: {
+                        Image(systemName: settingsStore.theme.iconName)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(CozyTheme.Colors.indigo)
+                            .contentTransition(.symbolEffect(.replace))
+                            .frame(width: 38, height: 38)
+                            .cozyFloatingChrome(in: Circle(), interactive: true)
+                    }
+                    .buttonStyle(CozyScaleButtonStyle())
+                    .sensoryFeedback(.selection, trigger: settingsStore.theme)
+                    .accessibilityLabel(
+                        settingsStore.isDarkMode ? "Switch to light theme" : "Switch to dark theme"
+                    )
+
+                    NavigationLink {
+                        SettingsScreen()
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                            .frame(width: 38, height: 38)
+                            .cozyFloatingChrome(in: Circle(), interactive: true)
+                    }
+                    .buttonStyle(CozyScaleButtonStyle())
+                    .accessibilityLabel("Open settings")
+                }
             }
-            .foregroundStyle(CozyTheme.Colors.indigo)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 7)
-            .background(
-                Capsule()
-                    .fill(CozyTheme.Colors.indigoSoft)
-            )
         }
         .padding(.top, 4)
     }

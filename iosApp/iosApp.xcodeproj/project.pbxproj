@@ -13,8 +13,17 @@
 		4DA9FEA85FF45C78EB27113E /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C40B071FD4E83EA0F36F3D7 /* Pods_iosApp.framework */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		A412577F30A8F9AE00C5A530 /* CozyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412577E30A8F9AE00C5A530 /* CozyTheme.swift */; };
-		A412578130A8F9B400C5A530 /* CozySurfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578030A8F9B400C5A530 /* CozySurfaces.swift */; };
-		A412578330A8F9B400C5A530 /* CozyComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578230A8F9B400C5A530 /* CozyComponents.swift */; };
+		A412578530A8FE3D00C5A530 /* CozyAmbientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578430A8FE3D00C5A530 /* CozyAmbientBackground.swift */; };
+		A412578730A8FE4000C5A530 /* CozyCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578630A8FE4000C5A530 /* CozyCard.swift */; };
+		A412578930A8FE4200C5A530 /* CozyFloatingChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578830A8FE4200C5A530 /* CozyFloatingChrome.swift */; };
+		A412578B30A8FE4200C5A530 /* CozyGlassContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578A30A8FE4200C5A530 /* CozyGlassContainer.swift */; };
+		A412578D30A8FE4900C5A530 /* CozyEntrance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578C30A8FE4900C5A530 /* CozyEntrance.swift */; };
+		A412578F30A8FE4C00C5A530 /* CozyScaleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578E30A8FE4C00C5A530 /* CozyScaleButtonStyle.swift */; };
+		A412579130A8FE4D00C5A530 /* CozyCopyChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412579030A8FE4D00C5A530 /* CozyCopyChip.swift */; };
+		A412579330A8FE5000C5A530 /* CozySpeakButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412579230A8FE5000C5A530 /* CozySpeakButton.swift */; };
+		A412579530A8FE5000C5A530 /* CozyBannerToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412579430A8FE5000C5A530 /* CozyBannerToast.swift */; };
+		A412579B30A8FE7400C5A530 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412579A30A8FE7400C5A530 /* SettingsStore.swift */; };
+		A412579D30A8FE7400C5A530 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412579C30A8FE7400C5A530 /* SettingsScreen.swift */; };
 		A420FCD22F47840600D43758 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A420FCD12F4783D500D43758 /* Colors.swift */; };
 		A47A50382F48B94C00153599 /* LanguageDropdownItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50372F48B94C00153599 /* LanguageDropdownItem.swift */; };
 		A47A503A2F48F8C600153599 /* LanguageDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50392F48F8C600153599 /* LanguageDropdown.swift */; };
@@ -57,8 +66,17 @@
 		8E11C406010C9C58F115350F /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A412575830A8EE6600C5A530 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A412577E30A8F9AE00C5A530 /* CozyTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyTheme.swift; sourceTree = "<group>"; };
-		A412578030A8F9B400C5A530 /* CozySurfaces.swift */ = {isa = PBXFileReference; path = CozySurfaces.swift; sourceTree = "<group>"; };
-		A412578230A8F9B400C5A530 /* CozyComponents.swift */ = {isa = PBXFileReference; path = CozyComponents.swift; sourceTree = "<group>"; };
+		A412578430A8FE3D00C5A530 /* CozyAmbientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyAmbientBackground.swift; sourceTree = "<group>"; };
+		A412578630A8FE4000C5A530 /* CozyCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyCard.swift; sourceTree = "<group>"; };
+		A412578830A8FE4200C5A530 /* CozyFloatingChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyFloatingChrome.swift; sourceTree = "<group>"; };
+		A412578A30A8FE4200C5A530 /* CozyGlassContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyGlassContainer.swift; sourceTree = "<group>"; };
+		A412578C30A8FE4900C5A530 /* CozyEntrance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyEntrance.swift; sourceTree = "<group>"; };
+		A412578E30A8FE4C00C5A530 /* CozyScaleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyScaleButtonStyle.swift; sourceTree = "<group>"; };
+		A412579030A8FE4D00C5A530 /* CozyCopyChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyCopyChip.swift; sourceTree = "<group>"; };
+		A412579230A8FE5000C5A530 /* CozySpeakButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozySpeakButton.swift; sourceTree = "<group>"; };
+		A412579430A8FE5000C5A530 /* CozyBannerToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyBannerToast.swift; sourceTree = "<group>"; };
+		A412579A30A8FE7400C5A530 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		A412579C30A8FE7400C5A530 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		A420FCD12F4783D500D43758 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		A47A50372F48B94C00153599 /* LanguageDropdownItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDropdownItem.swift; sourceTree = "<group>"; };
 		A47A50392F48F8C600153599 /* LanguageDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDropdown.swift; sourceTree = "<group>"; };
@@ -151,6 +169,7 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
+				A412579630A8FE6000C5A530 /* settings */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -159,10 +178,42 @@
 			isa = PBXGroup;
 			children = (
 				A412577E30A8F9AE00C5A530 /* CozyTheme.swift */,
-				A412578030A8F9B400C5A530 /* CozySurfaces.swift */,
-				A412578230A8F9B400C5A530 /* CozyComponents.swift */,
+				A412578430A8FE3D00C5A530 /* CozyAmbientBackground.swift */,
+				A412578630A8FE4000C5A530 /* CozyCard.swift */,
+				A412578830A8FE4200C5A530 /* CozyFloatingChrome.swift */,
+				A412578A30A8FE4200C5A530 /* CozyGlassContainer.swift */,
+				A412578C30A8FE4900C5A530 /* CozyEntrance.swift */,
+				A412578E30A8FE4C00C5A530 /* CozyScaleButtonStyle.swift */,
+				A412579030A8FE4D00C5A530 /* CozyCopyChip.swift */,
+				A412579230A8FE5000C5A530 /* CozySpeakButton.swift */,
+				A412579430A8FE5000C5A530 /* CozyBannerToast.swift */,
 			);
 			path = design_system;
+			sourceTree = "<group>";
+		};
+		A412579630A8FE6000C5A530 /* settings */ = {
+			isa = PBXGroup;
+			children = (
+				A412579730A8FE6000C5A530 /* data */,
+				A412579830A8FE6100C5A530 /* presentation */,
+			);
+			path = settings;
+			sourceTree = "<group>";
+		};
+		A412579730A8FE6000C5A530 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				A412579A30A8FE7400C5A530 /* SettingsStore.swift */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
+		A412579830A8FE6100C5A530 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				A412579C30A8FE7400C5A530 /* SettingsScreen.swift */,
+			);
+			path = presentation;
 			sourceTree = "<group>";
 		};
 		A420FCCF2F4783C000D43758 /* core */ = {
@@ -445,28 +496,37 @@
 			files = (
 				A4FFAF452F4DFFE700488508 /* MicrophonePowerObserver.swift in Sources */,
 				A4FFAF322F4C111200488508 /* ProgressButton.swift in Sources */,
-				A412578330A8F9B400C5A530 /* CozyComponents.swift in Sources */,
 				A412577F30A8F9AE00C5A530 /* CozyTheme.swift in Sources */,
 				A4FFAF492F4E5D9300488508 /* VoiceRecorderButton.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				A4FFAF2E2F4C0F4200488508 /* GradientSurface.swift in Sources */,
 				A420FCD22F47840600D43758 /* Colors.swift in Sources */,
+				A412579D30A8FE7400C5A530 /* SettingsScreen.swift in Sources */,
 				A4FFAF302F4C108B00488508 /* LanguageDisplay.swift in Sources */,
+				A412578730A8FE4000C5A530 /* CozyCard.swift in Sources */,
+				A412578D30A8FE4900C5A530 /* CozyEntrance.swift in Sources */,
+				A412579130A8FE4D00C5A530 /* CozyCopyChip.swift in Sources */,
 				A47A503C2F48FEAC00153599 /* SmallLanguageIcon.swift in Sources */,
+				A412579B30A8FE7400C5A530 /* SettingsStore.swift in Sources */,
 				A47A503A2F48F8C600153599 /* LanguageDropdown.swift in Sources */,
 				A47A503E2F48FFD300153599 /* SwapLanguageButton.swift in Sources */,
 				A4FFAF422F4DFE3000488508 /* VoiceToTextScreen.swift in Sources */,
 				A47A50402F4900FB00153599 /* IOSTranslateViewModel.swift in Sources */,
 				A47A50382F48B94C00153599 /* LanguageDropdownItem.swift in Sources */,
+				A412578B30A8FE4200C5A530 /* CozyGlassContainer.swift in Sources */,
 				A47A50422F49011800153599 /* TranslateScreen.swift in Sources */,
+				A412578530A8FE3D00C5A530 /* CozyAmbientBackground.swift in Sources */,
 				A4FFAF3D2F4D2E4800488508 /* IOSVoiceToTextParser.swift in Sources */,
 				A4FFAF362F4C1CC700488508 /* TextToSpeech.swift in Sources */,
+				A412578930A8FE4200C5A530 /* CozyFloatingChrome.swift in Sources */,
 				A4FFAF472F4E5BA300488508 /* VoiceRecorderDisplay.swift in Sources */,
 				A4FFAF402F4DFE2100488508 /* IOSVoiceToTextViewModel.swift in Sources */,
+				A412579330A8FE5000C5A530 /* CozySpeakButton.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				A4FFAF382F4C208200488508 /* TranslateHistoryItem.swift in Sources */,
-				A412578130A8F9B400C5A530 /* CozySurfaces.swift in Sources */,
+				A412579530A8FE5000C5A530 /* CozyBannerToast.swift in Sources */,
 				A4FFAF342F4C12AA00488508 /* TranslateTextField.swift in Sources */,
+				A412578F30A8FE4C00C5A530 /* CozyScaleButtonStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

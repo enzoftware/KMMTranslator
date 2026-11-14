@@ -30,7 +30,6 @@ enum CozyTheme {
         static let borderSubtle = Color(lightHex: 0xFFE6_DCCB, darkHex: 0xFF36_302B)
         static let warmShadow = Color(lightHex: 0xFF2A_1F14, darkHex: 0xFF00_0000)
 
-        // Ambient Mesh Palette
         static let meshTopLeading = Color(lightHex: 0xFFFD_F7EB, darkHex: 0xFF19_1513)
         static let meshTopCenter = Color(lightHex: 0xFFF6_EDDF, darkHex: 0xFF1F_1B24)
         static let meshTopTrailing = Color(lightHex: 0xFFEE_E8F7, darkHex: 0xFF1C_1A28)
@@ -61,7 +60,7 @@ enum CozyTheme {
         static let gentleEase = Animation.easeInOut(duration: 0.28)
 
         static func staggeredDelay(for index: Int) -> Double {
-            Double(min(index, 8)) * 0.045
+            Double(min(max(index, 0), 8)) * 0.045
         }
     }
 }
@@ -107,4 +106,39 @@ extension UIColor {
             }
         }
     }
+}
+
+#Preview("CozyTheme Swatches") {
+    let swatches: [(String, Color)] = [
+        ("Paper Background", CozyTheme.Colors.paperBackground),
+        ("Paper Card", CozyTheme.Colors.paperCard),
+        ("Paper Muted", CozyTheme.Colors.paperMuted),
+        ("Indigo", CozyTheme.Colors.indigo),
+        ("Indigo Soft", CozyTheme.Colors.indigoSoft),
+        ("Terracotta", CozyTheme.Colors.terracotta),
+        ("Sage", CozyTheme.Colors.sage),
+        ("Danger", CozyTheme.Colors.danger),
+        ("Ink Primary", CozyTheme.Colors.inkPrimary)
+    ]
+
+    ScrollView {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: 12)], spacing: 12) {
+            ForEach(swatches, id: \.0) { name, color in
+                VStack(spacing: 8) {
+                    RoundedRectangle(cornerRadius: CozyTheme.Radius.inner, style: .continuous)
+                        .fill(color)
+                        .frame(height: 54)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: CozyTheme.Radius.inner, style: .continuous)
+                                .strokeBorder(CozyTheme.Colors.borderSubtle, lineWidth: 1)
+                        )
+                    Text(name)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                }
+            }
+        }
+        .padding()
+    }
+    .background(CozyTheme.Colors.paperBackground)
 }
