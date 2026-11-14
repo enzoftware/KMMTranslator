@@ -16,35 +16,54 @@ struct LanguageDropdown: View {
 
     var body: some View {
         Menu {
-            VStack {
-                ForEach(
-                    UiLanguage.Companion().allLanguages,
-                    id: \.self.language.code
-                ) { language in
-                    LanguageDropdownItem(
-                        language: language,
-                        onClick: {
-                            selectedLanguage(language)
-                        }
-                    )
-                }
+            ForEach(
+                UiLanguage.Companion().allLanguages,
+                id: \.self.language.code
+            ) { item in
+                LanguageDropdownItem(
+                    language: item,
+                    onClick: {
+                        selectedLanguage(item)
+                    }
+                )
             }
         } label: {
-            HStack {
-                SmallLanguageIcon(language: language)
+            HStack(spacing: 8) {
+                SmallLanguageIcon(language: language, size: 24)
+
                 Text(language.language.languageName)
-                    .foregroundColor(.lightBlue)
-                Image(systemName: isOpen ? "chevron.up" : "chevron.down")
-                    .foregroundColor(.lightBlue)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+                    .id(language.language.code)
+                    .transition(.blurReplace)
+
+                Image(systemName: "chevron.down")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(CozyTheme.Colors.inkSecondary)
+                    .rotationEffect(.degrees(isOpen ? 180 : 0))
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity)
+            .background(
+                Capsule()
+                    .fill(CozyTheme.Colors.paperMuted.opacity(0.65))
+            )
+            .animation(CozyTheme.Motion.snappySpring, value: language.language.code)
+            .animation(CozyTheme.Motion.snappySpring, value: isOpen)
         }
+        .buttonStyle(CozyScaleButtonStyle())
+        .sensoryFeedback(.selection, trigger: language.language.code)
     }
 }
 
 #Preview {
     LanguageDropdown(
         language: UiLanguage(language: .german, imagePath: "german"),
-        isOpen: true,
-        selectedLanguage: { language in }
+        isOpen: false,
+        selectedLanguage: { _ in }
     )
+    .padding()
 }

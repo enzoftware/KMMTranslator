@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,9 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		4DA9FEA85FF45C78EB27113E /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C40B071FD4E83EA0F36F3D7 /* Pods_iosApp.framework */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		A412577F30A8F9AE00C5A530 /* CozyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412577E30A8F9AE00C5A530 /* CozyTheme.swift */; };
+		A412578130A8F9B400C5A530 /* CozySurfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578030A8F9B400C5A530 /* CozySurfaces.swift */; };
+		A412578330A8F9B400C5A530 /* CozyComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A412578230A8F9B400C5A530 /* CozyComponents.swift */; };
 		A420FCD22F47840600D43758 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A420FCD12F4783D500D43758 /* Colors.swift */; };
 		A47A50382F48B94C00153599 /* LanguageDropdownItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50372F48B94C00153599 /* LanguageDropdownItem.swift */; };
 		A47A503A2F48F8C600153599 /* LanguageDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47A50392F48F8C600153599 /* LanguageDropdown.swift */; };
@@ -53,6 +56,9 @@
 		8C40B071FD4E83EA0F36F3D7 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E11C406010C9C58F115350F /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A412575830A8EE6600C5A530 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A412577E30A8F9AE00C5A530 /* CozyTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CozyTheme.swift; sourceTree = "<group>"; };
+		A412578030A8F9B400C5A530 /* CozySurfaces.swift */ = {isa = PBXFileReference; path = CozySurfaces.swift; sourceTree = "<group>"; };
+		A412578230A8F9B400C5A530 /* CozyComponents.swift */ = {isa = PBXFileReference; path = CozyComponents.swift; sourceTree = "<group>"; };
 		A420FCD12F4783D500D43758 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		A47A50372F48B94C00153599 /* LanguageDropdownItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDropdownItem.swift; sourceTree = "<group>"; };
 		A47A50392F48F8C600153599 /* LanguageDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDropdown.swift; sourceTree = "<group>"; };
@@ -149,6 +155,16 @@
 			path = iosApp;
 			sourceTree = "<group>";
 		};
+		A412577D30A8F99700C5A530 /* design_system */ = {
+			isa = PBXGroup;
+			children = (
+				A412577E30A8F9AE00C5A530 /* CozyTheme.swift */,
+				A412578030A8F9B400C5A530 /* CozySurfaces.swift */,
+				A412578230A8F9B400C5A530 /* CozyComponents.swift */,
+			);
+			path = design_system;
+			sourceTree = "<group>";
+		};
 		A420FCCF2F4783C000D43758 /* core */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,6 +178,7 @@
 			children = (
 				A4FFAF2D2F4C0F3900488508 /* GradientSurface.swift */,
 				A420FCD12F4783D500D43758 /* Colors.swift */,
+				A412577D30A8F99700C5A530 /* design_system */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -428,6 +445,8 @@
 			files = (
 				A4FFAF452F4DFFE700488508 /* MicrophonePowerObserver.swift in Sources */,
 				A4FFAF322F4C111200488508 /* ProgressButton.swift in Sources */,
+				A412578330A8F9B400C5A530 /* CozyComponents.swift in Sources */,
+				A412577F30A8F9AE00C5A530 /* CozyTheme.swift in Sources */,
 				A4FFAF492F4E5D9300488508 /* VoiceRecorderButton.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				A4FFAF2E2F4C0F4200488508 /* GradientSurface.swift in Sources */,
@@ -446,6 +465,7 @@
 				A4FFAF402F4DFE2100488508 /* IOSVoiceToTextViewModel.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				A4FFAF382F4C208200488508 /* TranslateHistoryItem.swift in Sources */,
+				A412578130A8F9B400C5A530 /* CozySurfaces.swift in Sources */,
 				A4FFAF342F4C12AA00488508 /* TranslateTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -594,7 +614,7 @@
 				DEVELOPMENT_TEAM = WC95P7CK74;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -624,7 +644,7 @@
 				DEVELOPMENT_TEAM = WC95P7CK74;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -657,7 +677,7 @@
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/Pods/../../shared/build/cocoapods/framework\"";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp.iosAppTests;
@@ -685,7 +705,7 @@
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/Pods/../../shared/build/cocoapods/framework\"";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp.iosAppTests;

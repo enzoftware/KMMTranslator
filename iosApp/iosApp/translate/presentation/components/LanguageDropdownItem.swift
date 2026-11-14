@@ -1,5 +1,5 @@
 //
-//  LanguageDropdown.swift
+//  LanguageDropdownItem.swift
 //  iosApp
 //
 //  Created by Enzo Lizama on 20/02/26.
@@ -7,28 +7,29 @@
 //
 
 import SwiftUI
+import UIKit
 import shared
 
 struct LanguageDropdownItem: View {
-
     var language: UiLanguage
     var onClick: () -> Void
 
     var body: some View {
         Button(action: onClick) {
-            HStack {
-
-                if let image = UIImage(
-                    named: (language.imagePath?.lowercased())!
-                ) {
+            Label {
+                Text(language.language.languageName)
+                    .foregroundStyle(.primary)
+            } icon: {
+                if let imagePath = language.imagePath?.lowercased(),
+                   let image = UIImage(named: imagePath) {
                     Image(uiImage: image)
                         .resizable()
-                        .frame(width: 40, height: 40)
-                        .padding(.trailing, 6)
-                    Text(language.language.languageName)
-                        .foregroundColor(.textBlack)
+                        .scaledToFill()
+                        .frame(width: 24, height: 24)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: "globe")
                 }
-
             }
         }
     }

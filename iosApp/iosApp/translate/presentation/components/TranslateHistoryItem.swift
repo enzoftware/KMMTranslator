@@ -15,33 +15,46 @@ struct TranslateHistoryItem: View {
 
     var body: some View {
         Button(action: onClick) {
-            VStack(alignment: .leading) {
-                HStack {
-                    SmallLanguageIcon(language: item.fromLanguage)
-                        .padding(.trailing)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    SmallLanguageIcon(language: item.fromLanguage, size: 22)
+
+                    Image(systemName: "arrow.right")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(CozyTheme.Colors.inkMuted)
+
+                    SmallLanguageIcon(language: item.toLanguage, size: 22)
+
+                    Text("\(item.fromLanguage.language.languageName) → \(item.toLanguage.language.languageName)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(CozyTheme.Colors.inkSecondary)
+
+                    Spacer()
+
+                    Image(systemName: "arrow.up.backward.circle")
+                        .font(.subheadline)
+                        .foregroundStyle(CozyTheme.Colors.inkMuted)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
                     Text(item.fromText)
-                        .foregroundColor(.lightBlue)
-                        .font(.body)
+                        .font(.subheadline)
+                        .foregroundStyle(CozyTheme.Colors.inkSecondary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
 
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                HStack {
-                    SmallLanguageIcon(language: item.toLanguage)
-                        .padding(.trailing)
                     Text(item.toText)
-                        .foregroundColor(.onSurface)
                         .font(.body.weight(.semibold))
-
+                        .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                        .lineLimit(3)
+                        .multilineTextAlignment(.leading)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity)
-            .gradientSurface()
-            .cornerRadius(15)
-            .shadow(radius: 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(CozyTheme.Spacing.md)
+            .cozyCard(cornerRadius: 20)
         }
+        .buttonStyle(CozyScaleButtonStyle())
     }
 }
 
@@ -49,13 +62,13 @@ struct TranslateHistoryItem: View {
     TranslateHistoryItem(
         item: UiHistoryItem(
             id: 0,
-            fromText: "Hello",
-            toText: "Hola",
+            fromText: "Hello, good morning!",
+            toText: "Hola, ¡buenos días!",
             fromLanguage: UiLanguage(language: .english, imagePath: "english"),
             toLanguage: UiLanguage(language: .spanish, imagePath: "spanish")
         ),
-        onClick: {
-
-        }
+        onClick: {}
     )
+    .padding()
+    .background(CozyAmbientBackground())
 }
