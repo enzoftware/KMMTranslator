@@ -116,6 +116,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     private var inputNode: (any AudioInputNodeProtocol)?
     private var audioBufferRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: (any SpeechRecognitionTaskProtocol)?
+    private var activeSessionID: UUID?
     private var audioSession: any AudioSessionProtocol
     private let supportedLocalesProvider: () -> Set<Locale>
     private let recognizerFactory: (Locale) -> (any SpeechRecognizerProtocol)?
@@ -170,6 +171,9 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     func startListening(languageCode: String) {
         updateState(clearError: true)
 
+        let sessionID = UUID()
+        activeSessionID = sessionID
+
         let chosenLocale = Locale(identifier: languageCode)
         let supportedLocale =
             supportedLocalesProvider().contains(chosenLocale)
@@ -178,42 +182,50 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
         self.recognizer = recognizerFactory(supportedLocale)
 
         guard recognizer?.isAvailable == true else {
+            activeSessionID = nil
             updateState(error: "Speech recognizer is not available")
             return
         }
 
-        self.requestPermissions { [weak self] in
-            self?.audioBufferRequest = SFSpeechAudioBufferRecognitionRequest()
-
-            guard let audioBufferRequest = self?.audioBufferRequest else {
+        self.requestPermissions(sessionID: sessionID) { [weak self] in
+            guard let self, self.activeSessionID == sessionID else {
                 return
             }
 
-            self?.recognitionTask = self?.recognizer?.recognitionTask(
+            self.audioBufferRequest = SFSpeechAudioBufferRecognitionRequest()
+
+            guard let audioBufferRequest = self.audioBufferRequest else {
+                return
+            }
+
+            self.recognitionTask = self.recognizer?.recognitionTask(
                 with: audioBufferRequest
             ) { [weak self] (result, error) in
                 self?.performOnMain {
-                    guard self?.recognitionTask != nil else {
+                    guard let self,
+                          self.activeSessionID == sessionID,
+                          self.recognitionTask != nil
+                    else {
                         return
                     }
                     guard let result else {
                         if let error {
-                            self?.updateState(error: error.localizedDescription)
+                            self.updateState(error: error.localizedDescription)
                         }
                         return
                     }
 
-                    self?.updateState(result: result)
+                    self.updateState(result: result)
                 }
             }
 
-            let engine = self?.audioEngineFactory()
-            self?.audioEngine = engine
-            self?.inputNode = engine?.inputNodeProtocol
+            let engine = self.audioEngineFactory()
+            self.audioEngine = engine
+            self.inputNode = engine.inputNodeProtocol
 
-            guard let inputNode = self?.inputNode else {
-                self?.stopListening()
-                self?.updateState(error: "Failed to get audio input node")
+            guard let inputNode = self.inputNode else {
+                self.stopListening()
+                self.updateState(error: "Failed to get audio input node")
                 return
             }
 
@@ -226,21 +238,21 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
                 formatMetrics.sampleRate > 0
                     && formatMetrics.channelCount > 0
             else {
-                self?.updateState(
+                self.updateState(
                     error:
                         "Invalid audio format from input node - please test on a physical device"
                 )
-                self?.stopListening()
+                self.stopListening()
                 return
             }
 
             // Additional validation for common audio format issues
             guard !formatMetrics.isOtherFormat else {
-                self?.updateState(
+                self.updateState(
                     error:
                         "Unsupported audio format - please test on a physical device"
                 )
-                self?.stopListening()
+                self.stopListening()
                 return
             }
 
@@ -253,27 +265,27 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
             }
 
             do {
-                try self?.audioSession.setCategory(
+                try self.audioSession.setCategory(
                     .playAndRecord,
                     mode: .spokenAudio,
                     options: .duckOthers
                 )
-                try self?.audioSession.setActive(
+                try self.audioSession.setActive(
                     true,
                     options: .notifyOthersOnDeactivation
                 )
-                self?.audioEngine?.prepare()
+                self.audioEngine?.prepare()
 
-                self?.micObserver.startObserving()
-                try self?.audioEngine?.start()
-                self?.updateState(isSpeaking: true)
-                self?.micPowerCancelable = self?.micPowerRatio.sink {
+                self.micObserver.startObserving()
+                try self.audioEngine?.start()
+                self.updateState(isSpeaking: true)
+                self.micPowerCancelable = self.micPowerRatio.sink {
                     [weak self] ratio in
                     self?.updateState(powerRatio: ratio)
                 }
             } catch {
-                self?.stopListening()
-                self?.updateState(
+                self.stopListening()
+                self.updateState(
                     error: error.localizedDescription,
                     isSpeaking: false
                 )
@@ -282,6 +294,7 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
     }
 
     func stopListening() {
+        activeSessionID = nil
         self.updateState(isSpeaking: false)
         micPowerCancelable?.cancel()
         micPowerCancelable = nil
@@ -302,29 +315,38 @@ class IOSVoiceToTextParser: VoiceToTextParser, ObservableObject {
         try? audioSession.setActive(false, options: [])
     }
 
-    private func requestPermissions(onGranted: @escaping () -> Void) {
+    private func requestPermissions(
+        sessionID: UUID,
+        onGranted: @escaping () -> Void
+    ) {
         audioSession.requestRecordPermission { [weak self] wasGranted in
-            guard wasGranted else {
-                self?.performOnMain {
-                    self?.updateState(
+            self?.performOnMain {
+                guard let self, self.activeSessionID == sessionID else {
+                    return
+                }
+                guard wasGranted else {
+                    self.updateState(
                         error: "You need to grant permission to record your voice."
                     )
-                    self?.stopListening()
+                    self.stopListening()
+                    return
                 }
-                return
-            }
 
-            self?.speechAuthorizationRequester { [weak self] status in
-                self?.performOnMain {
-                    guard status == .authorized else {
-                        self?.updateState(
-                            error:
-                                "You need to grant permission to transcribe audio."
-                        )
-                        self?.stopListening()
-                        return
+                self.speechAuthorizationRequester { [weak self] status in
+                    self?.performOnMain {
+                        guard let self, self.activeSessionID == sessionID else {
+                            return
+                        }
+                        guard status == .authorized else {
+                            self.updateState(
+                                error:
+                                    "You need to grant permission to transcribe audio."
+                            )
+                            self.stopListening()
+                            return
+                        }
+                        onGranted()
                     }
-                    onGranted()
                 }
             }
         }

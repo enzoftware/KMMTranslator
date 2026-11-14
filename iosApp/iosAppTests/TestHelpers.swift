@@ -179,6 +179,7 @@ final class MockSpeechRecognizer: SpeechRecognizerProtocol {
     var isAvailable: Bool
     var lastTask: MockSpeechRecognitionTask?
     private(set) var lastResultHandler: ((String?, Error?) -> Void)?
+    private(set) var resultHandlers: [(String?, Error?) -> Void] = []
 
     init(isAvailable: Bool = true) {
         self.isAvailable = isAvailable
@@ -191,11 +192,16 @@ final class MockSpeechRecognizer: SpeechRecognizerProtocol {
         let task = MockSpeechRecognitionTask()
         lastTask = task
         lastResultHandler = resultHandler
+        resultHandlers.append(resultHandler)
         return task
     }
 
     func sendResult(_ result: String?, error: Error? = nil) {
         lastResultHandler?(result, error)
+    }
+
+    func sendResult(at index: Int, result: String?, error: Error? = nil) {
+        resultHandlers[index](result, error)
     }
 }
 

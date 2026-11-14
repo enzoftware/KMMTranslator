@@ -243,4 +243,72 @@ struct IOSVoiceToTextParserTests {
         #expect(parser.state.value?.powerRatio == 0.0)
         #expect(parser.state.value?.isSpeaking == false)
     }
+
+    @Test func lateRecognitionCallbackFromStoppedSessionDoesNotOverwriteActiveSession() {
+        struct StaleFailure: LocalizedError {
+            var errorDescription: String? { "Stale session A error" }
+        }
+        let recognizer = MockSpeechRecognizer()
+        let parser = makeParser(recognizer: recognizer)
+
+        parser.startListening(languageCode: "en-US")
+        recognizer.sendResult(at: 0, result: "Session A")
+        #expect(parser.state.value?.result == "Session A")
+
+        parser.stopListening()
+        parser.startListening(languageCode: "en-US")
+        recognizer.sendResult(at: 1, result: "Session B")
+        #expect(parser.state.value?.result == "Session B")
+        #expect(parser.state.value?.error == nil)
+
+        // Deliver late callbacks from session A after session B is active
+        recognizer.sendResult(at: 0, result: "Stale session A result")
+        recognizer.sendResult(at: 0, result: nil, error: StaleFailure())
+
+        #expect(parser.state.value?.result == "Session B")
+        #expect(parser.state.value?.error == nil)
+        #expect(parser.state.value?.isSpeaking == true)
+    }
+
+    @Test func deferredSpeechAuthorizationAfterStopOrResetDoesNotStartCapture() {
+        let micObserver = MockMicrophonePowerObserver()
+        let engine = MockAudioEngine()
+        let recognizer = MockSpeechRecognizer()
+        var pendingAuthCompletion: ((SFSpeechRecognizerAuthorizationStatus) -> Void)?
+
+        let parser = IOSVoiceToTextParser(
+            micObserver: micObserver,
+            audioSession: MockAudioSession(),
+            supportedLocalesProvider: { [Locale(identifier: "en-US")] },
+            recognizerFactory: { _ in recognizer },
+            speechAuthorizationRequester: { completion in
+                pendingAuthCompletion = completion
+            },
+            audioEngineFactory: { engine }
+        )
+
+        parser.startListening(languageCode: "en-US")
+        #expect(pendingAuthCompletion != nil)
+
+        parser.stopListening()
+        pendingAuthCompletion?(.authorized)
+
+        #expect(micObserver.startObservingCallCount == 0)
+        #expect(engine.startCallCount == 0)
+        #expect(engine.mockInputNode.installTapCallCount == 0)
+        #expect(recognizer.lastTask == nil)
+        #expect(parser.state.value?.isSpeaking == false)
+
+        pendingAuthCompletion = nil
+        parser.startListening(languageCode: "en-US")
+        #expect(pendingAuthCompletion != nil)
+
+        parser.reset()
+        pendingAuthCompletion?(.authorized)
+
+        #expect(micObserver.startObservingCallCount == 0)
+        #expect(engine.startCallCount == 0)
+        #expect(recognizer.lastTask == nil)
+        #expect(parser.state.value?.isSpeaking == false)
+    }
 }
