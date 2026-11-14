@@ -22,7 +22,7 @@ extension TranslateScreen {
             isTranslating: false,
             fromLanguage: UiLanguage(
                 language: .english,
-                imagePath: "english.png"
+                imagePath: "english"
             ),
             toLanguage: UiLanguage(language: .german, imagePath: "german"),
             isChoosingFromLanguage: false,
@@ -51,15 +51,17 @@ extension TranslateScreen {
         }
 
         func startObserving() {
-            handle = viewModel.state.subscribe(onCollect: { state in
+            handle?.dispose()
+            handle = viewModel.state.subscribe(onCollect: { [weak self] state in
                 if let state = state {
-                    self.state = state
+                    self?.state = state
                 }
             })
         }
 
         func dispose() {
             handle?.dispose()
+            handle = nil
         }
     }
 }

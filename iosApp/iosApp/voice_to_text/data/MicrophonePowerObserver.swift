@@ -11,12 +11,22 @@ import Foundation
 import Speech
 import shared
 
-class MicrophonePowerObserver: ObservableObject {
+protocol MicrophonePowerObserving: AnyObject {
+    var micPowerRatioPublisher: AnyPublisher<Double, Never> { get }
+    func startObserving()
+    func release()
+}
+
+class MicrophonePowerObserver: ObservableObject, MicrophonePowerObserving {
 
     private var cancellable: AnyCancellable? = nil
     private var audioRecorder: AVAudioRecorder? = nil
 
     @Published private(set) var micPowerRatio = 0.0
+
+    var micPowerRatioPublisher: AnyPublisher<Double, Never> {
+        $micPowerRatio.eraseToAnyPublisher()
+    }
 
     private let powerRatioEmissionPerSecond = 20.0
 
@@ -25,6 +35,14 @@ class MicrophonePowerObserver: ObservableObject {
 
     deinit {
         release()
+    }
+
+    static func normalizedPowerRatio(for powerOffset: Float) -> Double {
+        if powerOffset < -50 {
+            return 0.0
+        }
+        let normalizedOffset = Double(50 + powerOffset) / 50.0
+        return min(max(0.0, normalizedOffset), 1.0)
     }
 
     func startObserving() {
@@ -59,12 +77,7 @@ class MicrophonePowerObserver: ObservableObject {
                 recorder.updateMeters()
 
                 let powerOffset = recorder.averagePower(forChannel: 0)
-                if powerOffset < -50 {
-                    self?.micPowerRatio = 0.0
-                } else {
-                    let normalizedOffset = CGFloat(50 + powerOffset) / 50.0
-                    self?.micPowerRatio = normalizedOffset
-                }
+                self?.micPowerRatio = Self.normalizedPowerRatio(for: powerOffset)
             }
         } catch {
             print(
@@ -74,6 +87,7 @@ class MicrophonePowerObserver: ObservableObject {
     }
 
     func release() {
+        cancellable?.cancel()
         cancellable = nil
         audioRecorder?.stop()
         audioRecorder = nil

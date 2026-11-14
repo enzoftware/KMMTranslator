@@ -56,6 +56,7 @@ import shared
 
     func dispose() {
         handle?.dispose()
+        handle = nil
         onEvent(event: VoiceToTextEvent.Reset())
     }
 }
