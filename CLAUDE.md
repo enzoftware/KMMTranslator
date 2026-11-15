@@ -11,8 +11,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Run all tests
 ./gradlew test
 
-# Run a single test class
-./gradlew :shared:test --tests "com.enzoftware.translatorapp.CommonGreetingTest"
+# Run shared tests on the JVM (Android host) and on the iOS simulator
+./gradlew :shared:testAndroidHostTest
+./gradlew :shared:iosSimulatorArm64Test
+
+# Run a single shared test class
+./gradlew :shared:testAndroidHostTest --tests "com.enzoftware.translatorapp.translate.presentation.TranslateViewModelTest"
 
 # Build Android debug APK
 ./gradlew :androidApp:assembleDebug
@@ -75,6 +79,6 @@ English, Arabic, Azerbaijani, Chinese, French, German, Italian, Japanese, Korean
 
 ## Key Dependencies (from `gradle/libs.versions.toml`)
 
-- Kotlin: `2.1.21`, Ktor: `3.1.1`, SQLDelight: `2.0.2`
-- Android: AGP `8.12.0`, Compose BOM `2025.06.01`, Hilt `2.51.1`, KSP `2.1.20-1.0.32`
+- Gradle `9.9.1`, Kotlin: `2.4.21`, Ktor: `3.6.1`, SQLDelight: `2.4.1`, Coroutines `1.11.0`
+- Android: AGP `9.5.1` (built-in Kotlin; `shared` uses `com.android.kotlin.multiplatform.library`), compileSdk 37.2, Compose BOM `2026.09.00`, Hilt `2.60.1`, KSP `2.3.14`, Coil `3.6.3`
 - Testing: kotlin-test, assertK, Turbine

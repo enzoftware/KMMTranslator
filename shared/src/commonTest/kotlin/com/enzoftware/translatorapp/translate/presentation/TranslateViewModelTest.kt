@@ -239,21 +239,30 @@ class TranslateViewModelTest {
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("hello"))
             awaitItem()
             viewModel.onEvent(TranslateEvent.Translate)
-            awaitItem() // loading
-            awaitItem() // result: toText = "test translation"
+            // The translation result and the history insert are two independent emissions
+            // whose order is not guaranteed, so wait until both have landed.
+            var settled = awaitItem()
+            while (settled.toText == null || settled.history.isEmpty()) {
+                settled = awaitItem()
+            }
+            val originalFrom = settled.fromLanguage
 
             viewModel.onEvent(TranslateEvent.SwapLanguages)
 
-            val state = awaitItem()
+            var state = awaitItem()
+            while (state.toLanguage != originalFrom) {
+                state = awaitItem()
+            }
             assertThat(state.fromText).isEqualTo("test translation")
             assertThat(state.toText).isEqualTo("hello")
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
     // --- onCloseTranslation ---
 
     @Test
-    fun `CloseTranslation - resets fromText, toText, and isTranslating`() = runBlocking {
+    fun `CloseTranslation - resets fromText and toText and isTranslating`() = runBlocking {
         viewModel.state.test {
             awaitItem()
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("hello"))
@@ -280,14 +289,18 @@ class TranslateViewModelTest {
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("hello"))
             awaitItem()
             viewModel.onEvent(TranslateEvent.Translate)
-            awaitItem() // loading
-            awaitItem() // result: toText = "test translation"
+            // Result and history insert are independent emissions; wait for both.
+            var settled = awaitItem()
+            while (settled.toText == null || settled.history.isEmpty()) {
+                settled = awaitItem()
+            }
 
             viewModel.onEvent(TranslateEvent.EditTranslation)
 
             val state = awaitItem()
             assertThat(state.toText).isNull()
             assertThat(state.isTranslating).isFalse()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
