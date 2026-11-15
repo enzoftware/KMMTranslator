@@ -4,7 +4,8 @@ kotlin = "2.4.21"
 ksp = "2.3.14"
 coroutines = "1.11.0"
 ktor = "3.6.1"
-sqlDelight = "2.4.1"
+room = "3.0.3"
+sqlite = "2.7.1"
 kotlinDateTime = "0.8.0"
 
 composeBom = "2026.09.00"
@@ -37,10 +38,9 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
-sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
-sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
-sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
-sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
+room-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 # AndroidX / Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -83,7 +83,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+room = { id = "androidx.room3", version.ref = "room" }
 
 [bundles]
 ktor = [

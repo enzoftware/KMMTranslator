@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.androidKmpLibrary)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.sqldelight)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -28,13 +29,23 @@ kotlin {
         withHostTest {
             isIncludeAndroidResources = true
         }
+
+        // Room + bundled SQLite need a real Android runtime, so the shared suite (including
+        // HistoryDatabaseContract) also runs on a device. Joining the "test" source-set tree makes
+        // androidDeviceTest inherit commonTest through the default hierarchy (no manual dependsOn,
+        // which would switch that hierarchy off and break the iOS source sets).
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
     }
 
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
-    iosX64()
+    // No iosX64: Room 3 and the bundled SQLite driver don't ship Intel-simulator binaries.
     iosArm64()
     iosSimulatorArm64()
 
@@ -54,32 +65,39 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.bundles.ktor)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.sqldelight.runtime)
-            implementation(libs.sqldelight.coroutines.extensions)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
             implementation(libs.kotlin.date.time)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.assertk)
             implementation(libs.turbine)
+            implementation(libs.kotlinx.coroutines.test)
+        }
+
+        getByName("androidDeviceTest").dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.androidx.test.runner)
+            implementation(libs.androidx.test.core)
+            implementation(libs.androidx.test.ext.junit)
         }
 
         androidMain.dependencies {
             implementation(libs.ktor.android)
-            implementation(libs.sqldelight.android.driver)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.darwin)
-            implementation(libs.sqldelight.native.driver)
         }
     }
 }
 
-sqldelight {
-    databases {
-        create("TranslatorDatabase") {
-            packageName.set("com.enzoftware.translatorapp")
-        }
-    }
+room3 {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    // Room's KSP processor runs once per target that compiles the database.
+    listOf("kspAndroid", "kspIosArm64", "kspIosSimulatorArm64").forEach { add(it, libs.room.compiler) }
 }
