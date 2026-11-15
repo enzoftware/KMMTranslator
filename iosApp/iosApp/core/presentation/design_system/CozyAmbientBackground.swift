@@ -46,7 +46,19 @@ struct CozyAmbientBackground: View {
         }
         .ignoresSafeArea()
         .onAppear {
-            guard !reduceMotion, !driftPhase else { return }
+            updateDriftAnimation(for: reduceMotion)
+        }
+        .onChange(of: reduceMotion) { _, newValue in
+            updateDriftAnimation(for: newValue)
+        }
+    }
+
+    private func updateDriftAnimation(for isReduceMotionEnabled: Bool) {
+        if isReduceMotionEnabled {
+            withAnimation(.default) {
+                driftPhase = false
+            }
+        } else if !driftPhase {
             withAnimation(.easeInOut(duration: 9.0).repeatForever(autoreverses: true)) {
                 driftPhase = true
             }

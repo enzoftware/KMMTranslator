@@ -13,7 +13,7 @@ struct TranslateScreen: View {
     private var historyDataSource: HistoryDataSource
     @StateObject private var voiceToTextParser = IOSVoiceToTextParser()
     private var translateUseCase: TranslateUseCase
-    @ObservedObject var viewModel: IOSTranslateViewModel
+    @StateObject var viewModel: IOSTranslateViewModel
     @EnvironmentObject private var settingsStore: SettingsStore
 
     @Namespace private var voiceNamespace
@@ -25,9 +25,11 @@ struct TranslateScreen: View {
     ) {
         self.historyDataSource = historyDataSource
         self.translateUseCase = translateUseCase
-        self.viewModel = IOSTranslateViewModel(
-            historyDataSource: historyDataSource,
-            translateUseCase: translateUseCase
+        self._viewModel = StateObject(
+            wrappedValue: IOSTranslateViewModel(
+                historyDataSource: historyDataSource,
+                translateUseCase: translateUseCase
+            )
         )
     }
 

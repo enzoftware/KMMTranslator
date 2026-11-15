@@ -52,6 +52,12 @@ struct TranslateTextField: View {
         .cozyCard(cornerRadius: CozyTheme.Radius.card, isElevated: true)
         .animation(CozyTheme.Motion.cozySpring, value: isShowingResult)
         .animation(CozyTheme.Motion.snappySpring, value: isTranslating)
+        .onChange(of: toText) { _, _ in
+            tts.stop()
+        }
+        .onChange(of: toLanguage.language.code) { _, _ in
+            tts.stop()
+        }
         .onDisappear {
             tts.stop()
         }
@@ -164,7 +170,7 @@ extension TranslateTextField {
                         )
                 )
 
-                if fromText.isEmpty {
+                if fromText.isEmpty && fromLanguage.language == .english {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(starterIdioms, id: \.self) { phrase in

@@ -52,13 +52,15 @@ struct VoiceToTextScreen: View {
             VStack(spacing: CozyTheme.Spacing.lg) {
                 topBar
 
-                Spacer()
-
-                mainStage
-                    .id(currentDisplayState)
-                    .transition(.blurReplace)
-
-                Spacer()
+                GeometryReader { proxy in
+                    ScrollView {
+                        mainStage
+                            .id(currentDisplayState)
+                            .transition(.blurReplace)
+                            .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                    }
+                    .scrollIndicators(.hidden)
+                }
 
                 bottomDock
             }

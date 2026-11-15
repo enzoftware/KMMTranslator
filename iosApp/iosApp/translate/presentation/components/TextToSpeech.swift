@@ -14,6 +14,7 @@ import Foundation
 final class TextToSpeech: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
     @Published private(set) var isSpeaking = false
     private let synthesizer = AVSpeechSynthesizer()
+    private var activeUtterance: AVSpeechUtterance?
 
     override init() {
         super.init()
@@ -22,19 +23,20 @@ final class TextToSpeech: NSObject, ObservableObject, AVSpeechSynthesizerDelegat
 
     func speak(text: String, language: String) {
         if synthesizer.isSpeaking {
-            synthesizer.stopSpeaking(at: .immediate)
-            isSpeaking = false
+            stop()
             return
         }
 
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: language)
         utterance.volume = 1.0
+        activeUtterance = utterance
         isSpeaking = true
         synthesizer.speak(utterance)
     }
 
     func stop() {
+        activeUtterance = nil
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
@@ -46,6 +48,8 @@ final class TextToSpeech: NSObject, ObservableObject, AVSpeechSynthesizerDelegat
         didFinish utterance: AVSpeechUtterance
     ) {
         Task { @MainActor [weak self] in
+            guard self?.activeUtterance === utterance else { return }
+            self?.activeUtterance = nil
             self?.isSpeaking = false
         }
     }
@@ -55,6 +59,8 @@ final class TextToSpeech: NSObject, ObservableObject, AVSpeechSynthesizerDelegat
         didCancel utterance: AVSpeechUtterance
     ) {
         Task { @MainActor [weak self] in
+            guard self?.activeUtterance === utterance else { return }
+            self?.activeUtterance = nil
             self?.isSpeaking = false
         }
     }
