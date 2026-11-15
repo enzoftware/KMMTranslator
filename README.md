@@ -11,8 +11,7 @@
 | Home & Quick Phrases | Translator Card States | Voice-to-Text & Diagnostics | Profile & Appearance Settings |
 | :---: | :---: | :---: | :---: |
 | <img src="docs/screenshots/01_home_translate.png" width="210" alt="Parley Home Screen" /> | <img src="docs/screenshots/02_translator_card_states.png" width="210" alt="Translator Card States" /> | <img src="docs/screenshots/03_voice_to_text.png" width="210" alt="Voice to Text Screen" /> | <img src="docs/screenshots/04_settings.png" width="210" alt="Settings Screen" /> |
-
-*(High-resolution copies are also exported to `~/Desktop/Parley-Screenshots`.)*
+gh repo clone enzoftware/shufflelink
 
 ---
 
