@@ -38,6 +38,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -123,7 +124,7 @@ fun TranslateTextField(
             )
         } else {
             IdleContent(
-                fromText = fromText,
+                stateText = fromText,
                 fromLanguage = fromLanguage,
                 toLanguage = toLanguage,
                 isTranslating = isTranslating,
@@ -135,7 +136,7 @@ fun TranslateTextField(
 
 @Composable
 private fun IdleContent(
-    fromText: String,
+    stateText: String,
     fromLanguage: UiLanguage,
     toLanguage: UiLanguage,
     isTranslating: Boolean,
@@ -150,6 +151,9 @@ private fun IdleContent(
         label = "editorBorder",
     )
     val editorShape = RoundedCornerShape(CozyRadius.inner)
+    val sync = remember { EditorTextSync(stateText) }
+    LaunchedEffect(stateText) { sync.onStateText(stateText) }
+    val fromText = sync.value.text
 
     Column(verticalArrangement = Arrangement.spacedBy(CozySpacing.sm)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -177,7 +181,10 @@ private fun IdleContent(
             ) {
                 Row(
                     modifier = Modifier
-                        .cozyClickable { onTranslateEvent(TranslateEvent.CloseTranslation) }
+                        .cozyClickable {
+                            sync.replace("")
+                            onTranslateEvent(TranslateEvent.CloseTranslation)
+                        }
                         .clip(CircleShape)
                         .background(colors.paperMuted.copy(alpha = 0.75f))
                         .padding(horizontal = 10.dp, vertical = 5.dp),
@@ -210,8 +217,12 @@ private fun IdleContent(
                 )
             }
             BasicTextField(
-                value = fromText,
-                onValueChange = { onTranslateEvent(TranslateEvent.ChangeTranslationText(it)) },
+                value = sync.value,
+                onValueChange = { newValue ->
+                    if (sync.onUserEdit(newValue)) {
+                        onTranslateEvent(TranslateEvent.ChangeTranslationText(newValue.text))
+                    }
+                },
                 enabled = !isTranslating,
                 textStyle = CozyText.sans(CozyTextSize.body).copy(color = colors.inkPrimary),
                 cursorBrush = SolidColor(colors.indigo),
@@ -237,7 +248,10 @@ private fun IdleContent(
                     val phrase = stringResource(idiomRes)
                     Row(
                         modifier = Modifier
-                            .cozyClickable { onTranslateEvent(TranslateEvent.ChangeTranslationText(phrase)) }
+                            .cozyClickable {
+                                sync.replace(phrase)
+                                onTranslateEvent(TranslateEvent.ChangeTranslationText(phrase))
+                            }
                             .clip(CircleShape)
                             .background(colors.paperMuted.copy(alpha = 0.65f))
                             .border(1.dp, colors.borderSubtle, CircleShape)
