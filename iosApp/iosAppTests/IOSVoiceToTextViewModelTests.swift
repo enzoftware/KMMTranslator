@@ -134,4 +134,54 @@ struct IOSVoiceToTextViewModelTests {
         #expect(viewModel.state.spokenText == stateAtDispose.spokenText)
         #expect(viewModel.state.displayState == stateAtDispose.displayState)
     }
+
+    @Test func diagnosticsDetectMissingMicrophonePermissionAndNeedSettingsRedirect() {
+        let diagnostics = VoicePermissionDiagnostics(
+            microphone: .denied,
+            speechRecognition: .granted,
+            errorText: "You need to grant permission to record your voice.",
+            languageDisplayName: "English"
+        )
+
+        #expect(diagnostics.hasMissingPermission)
+        #expect(diagnostics.needsSettingsRedirect)
+        #expect(diagnostics.headline == "Microphone access is off")
+    }
+
+    @Test func diagnosticsDetectDeniedSpeechRecognitionAndRecognizerUnavailable() {
+        let speechDenied = VoicePermissionDiagnostics(
+            microphone: .granted,
+            speechRecognition: .denied,
+            errorText: nil,
+            languageDisplayName: "Spanish"
+        )
+        #expect(speechDenied.hasMissingPermission)
+        #expect(speechDenied.needsSettingsRedirect)
+        #expect(speechDenied.headline == "Speech Recognition is off")
+
+        let unavailable = VoicePermissionDiagnostics(
+            microphone: .granted,
+            speechRecognition: .granted,
+            errorText: "Speech recognizer is not available",
+            languageDisplayName: "Spanish"
+        )
+        #expect(!unavailable.hasMissingPermission)
+        #expect(unavailable.isRecognizerUnavailableError)
+        #expect(unavailable.needsSettingsRedirect)
+        #expect(unavailable.headline == "Speech recognition unavailable")
+    }
+
+    @Test func diagnosticsDistinguishAudioHardwareErrorWithoutSettingsRedirect() {
+        let hardwareError = VoicePermissionDiagnostics(
+            microphone: .granted,
+            speechRecognition: .granted,
+            errorText: "Invalid audio format from input node - please test on a physical device",
+            languageDisplayName: "English"
+        )
+
+        #expect(!hardwareError.hasMissingPermission)
+        #expect(hardwareError.isAudioHardwareError)
+        #expect(!hardwareError.needsSettingsRedirect)
+        #expect(hardwareError.headline == "Microphone unavailable here")
+    }
 }
