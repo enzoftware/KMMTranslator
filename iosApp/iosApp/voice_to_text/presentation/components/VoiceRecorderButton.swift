@@ -16,6 +16,7 @@ struct VoiceRecorderButton: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isBreathing = false
+    @State private var tapCount = 0
 
     private var buttonColor: Color {
         switch displayState {
@@ -45,14 +46,23 @@ struct VoiceRecorderButton: View {
             return "Stop recording"
         case .displayingResults:
             return "Use spoken text"
+        case .error:
+            return "Retry voice recording"
         default:
             return "Start recording"
         }
     }
 
     var body: some View {
-        Button(action: onClick) {
+        Button {
+            tapCount += 1
+            onClick()
+        } label: {
             ZStack {
+                Color.clear
+                    .frame(width: 96, height: 96)
+                    .contentShape(Circle())
+
                 if displayState == .speaking && !reduceMotion {
                     Circle()
                         .fill(buttonColor.opacity(0.18))
@@ -84,9 +94,11 @@ struct VoiceRecorderButton: View {
                     .contentTransition(.symbolEffect(.replace))
             }
             .frame(width: 108, height: 108)
+            .contentShape(Circle())
             .animation(CozyTheme.Motion.cozySpring, value: displayState)
         }
         .buttonStyle(CozyScaleButtonStyle(pressedScale: 0.92))
+        .sensoryFeedback(.impact(weight: .medium), trigger: tapCount)
         .sensoryFeedback(.impact(weight: .medium), trigger: displayState)
         .accessibilityLabel(accessibilityTitle)
         .onChange(of: displayState) { _, newValue in

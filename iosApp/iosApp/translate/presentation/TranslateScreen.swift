@@ -18,6 +18,7 @@ struct TranslateScreen: View {
 
     @Namespace private var voiceNamespace
     @State private var isHistoryExpanded = false
+    @State private var isShowingVoiceInput = false
 
     init(
         historyDataSource: HistoryDataSource,
@@ -90,6 +91,18 @@ struct TranslateScreen: View {
         .animation(CozyTheme.Motion.cozySpring, value: viewModel.state.error != nil)
         .animation(CozyTheme.Motion.cozySpring, value: viewModel.state.history.count)
         .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(isPresented: $isShowingVoiceInput) {
+            VoiceToTextScreen(
+                onResult: { spokenText in
+                    viewModel.onEvent(
+                        event: TranslateEvent.SubmitVoiceResult(result: spokenText)
+                    )
+                },
+                voiceToTextParser: voiceToTextParser,
+                languageCode: viewModel.state.fromLanguage.language.code
+            )
+            .navigationTransition(.zoom(sourceID: "voice_recorder", in: voiceNamespace))
+        }
         .onAppear {
             viewModel.startObserving()
         }
@@ -143,7 +156,8 @@ struct TranslateScreen: View {
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(CozyTheme.Colors.inkPrimary)
                         .frame(width: 40, height: 40)
-                        .cozyFloatingChrome(in: Circle(), interactive: true)
+                        .cozyFloatingChrome(in: Circle(), interactive: false)
+                        .contentShape(Circle())
                 }
                 .buttonStyle(CozyScaleButtonStyle())
                 .accessibilityLabel("Open settings")
@@ -309,17 +323,14 @@ struct TranslateScreen: View {
                 .padding(6)
                 .cozyFloatingChrome(in: Capsule(), interactive: true)
 
-                NavigationLink {
-                    VoiceToTextScreen(
-                        onResult: { spokenText in
-                            viewModel.onEvent(
-                                event: TranslateEvent.SubmitVoiceResult(result: spokenText)
-                            )
-                        },
-                        voiceToTextParser: voiceToTextParser,
-                        languageCode: viewModel.state.fromLanguage.language.code
+                Button {
+                    UIApplication.shared.sendAction(
+                        #selector(UIResponder.resignFirstResponder),
+                        to: nil,
+                        from: nil,
+                        for: nil
                     )
-                    .navigationTransition(.zoom(sourceID: "voice_recorder", in: voiceNamespace))
+                    isShowingVoiceInput = true
                 } label: {
                     Image(systemName: "mic.fill")
                         .font(.system(size: 18, weight: .semibold))
@@ -328,8 +339,9 @@ struct TranslateScreen: View {
                         .cozyFloatingChrome(
                             in: Circle(),
                             tint: CozyTheme.Colors.indigo,
-                            interactive: true
+                            interactive: false
                         )
+                        .contentShape(Circle())
                 }
                 .buttonStyle(CozyScaleButtonStyle())
                 .matchedTransitionSource(id: "voice_recorder", in: voiceNamespace)
