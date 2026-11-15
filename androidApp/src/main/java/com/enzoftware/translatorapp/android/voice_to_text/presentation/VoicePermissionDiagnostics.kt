@@ -12,6 +12,28 @@ enum class MicPermission(@StringRes val labelRes: Int) {
     BLOCKED(R.string.permission_blocked),
 }
 
+/**
+ * Interprets a RECORD_AUDIO request result. Android reports "dismissed the dialog" and "blocked
+ * forever" identically (denied, no rationale), so the rationale flag from before the request and a
+ * remembered earlier denial are used to tell them apart:
+ *
+ * - rationale after the request: the user tapped "Don't allow" but can still be asked again.
+ * - no rationale now, but there was one before (or an earlier denial was seen): that denial made it
+ *   permanent, or the system auto-denied without showing a dialog.
+ * - otherwise the first dialog was just dismissed, so nothing is blocked yet.
+ */
+fun classifyMicPermissionResult(
+    granted: Boolean,
+    rationaleBeforeRequest: Boolean,
+    rationaleAfterRequest: Boolean,
+    deniedBefore: Boolean,
+): MicPermission = when {
+    granted -> MicPermission.GRANTED
+    rationaleAfterRequest -> MicPermission.DENIED
+    rationaleBeforeRequest || deniedBefore -> MicPermission.BLOCKED
+    else -> MicPermission.DENIED
+}
+
 enum class VoiceIssue {
     NONE,
     MIC_NEEDED,

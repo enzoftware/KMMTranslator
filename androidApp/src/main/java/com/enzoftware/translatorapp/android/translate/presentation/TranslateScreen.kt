@@ -415,7 +415,7 @@ private fun PostcardShelf(
     ) {
         itemsIndexed(history, key = { index, item -> "postcard_${item.stableKey(index)}" }) { index, item ->
             // Cards that are partly scrolled out shrink and fade slightly, like iOS scrollTransition.
-            val isFullyVisible by remember {
+            val isFullyVisible by remember(listState, index) {
                 derivedStateOf {
                     val info = listState.layoutInfo
                     val itemInfo = info.visibleItemsInfo.firstOrNull { it.index == index }

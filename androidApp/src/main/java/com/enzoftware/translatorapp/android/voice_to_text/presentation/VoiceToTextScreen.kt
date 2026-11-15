@@ -65,6 +65,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -121,24 +122,38 @@ fun VoiceToTextRoute(
 ) {
     val context = LocalContext.current
     val isSpeechAvailable = remember { SpeechRecognizer.isRecognitionAvailable(context) }
-    var micPermission by remember { mutableStateOf(context.currentMicPermission()) }
+    val permissionMemory = remember { MicPermissionMemory(context) }
+    // Saveable so a rotation neither forgets the diagnosis nor fires the permission dialog again.
+    var micPermission by rememberSaveable { mutableStateOf(context.currentMicPermission()) }
+    var hasAutoRequested by rememberSaveable { mutableStateOf(false) }
+    var rationaleBeforeRequest by rememberSaveable { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        val canAskAgain = context.findActivity()
-            ?.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) ?: false
-        micPermission = when {
-            granted -> MicPermission.GRANTED
-            canAskAgain -> MicPermission.DENIED
-            else -> MicPermission.BLOCKED
-        }
+        val rationaleAfter = context.shouldShowMicRationale()
+        micPermission = classifyMicPermissionResult(
+            granted = granted,
+            rationaleBeforeRequest = rationaleBeforeRequest,
+            rationaleAfterRequest = rationaleAfter,
+            deniedBefore = permissionMemory.deniedBefore,
+        )
+        permissionMemory.deniedBefore = !granted && (rationaleAfter || permissionMemory.deniedBefore ||
+            micPermission == MicPermission.BLOCKED)
         onEvent(VoiceToTextEvent.PermissionResult(isGranted = granted, isPermanentDeclined = micPermission == MicPermission.BLOCKED))
+    }
+    val requestPermission = {
+        rationaleBeforeRequest = context.shouldShowMicRationale()
+        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
 
     LaunchedEffect(Unit) {
-        if (micPermission == MicPermission.GRANTED) {
-            onEvent(VoiceToTextEvent.PermissionResult(isGranted = true, isPermanentDeclined = false))
-        } else {
-            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        when {
+            micPermission == MicPermission.GRANTED ->
+                onEvent(VoiceToTextEvent.PermissionResult(isGranted = true, isPermanentDeclined = false))
+
+            !hasAutoRequested -> {
+                hasAutoRequested = true
+                requestPermission()
+            }
         }
     }
 
@@ -161,7 +176,7 @@ fun VoiceToTextRoute(
         ),
         onResult = onResult,
         onEvent = onEvent,
-        onRequestPermission = { permissionLauncher.launch(Manifest.permission.RECORD_AUDIO) },
+        onRequestPermission = requestPermission,
         onOpenSettings = { context.openAppSettings() },
     )
 }
@@ -666,6 +681,22 @@ private fun Context.currentMicPermission(): MicPermission =
     } else {
         MicPermission.NOT_ASKED
     }
+
+private fun Context.shouldShowMicRationale(): Boolean =
+    findActivity()?.shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) ?: false
+
+/** Survives app restarts so a permanently blocked mic is recognised on the next visit too. */
+private class MicPermissionMemory(context: Context) {
+    private val prefs = context.applicationContext.getSharedPreferences("voice_permissions", Context.MODE_PRIVATE)
+
+    var deniedBefore: Boolean
+        get() = prefs.getBoolean(KEY_DENIED_BEFORE, false)
+        set(value) = prefs.edit().putBoolean(KEY_DENIED_BEFORE, value).apply()
+
+    private companion object {
+        const val KEY_DENIED_BEFORE = "mic_denied_before"
+    }
+}
 
 private fun Context.findActivity(): Activity? {
     var current: Context? = this

@@ -9,7 +9,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,9 +27,16 @@ class SettingsViewModel @Inject constructor(
      */
     private val nameDraft = MutableStateFlow<String?>(null)
 
+    private val _isLoaded = MutableStateFlow(false)
+
+    /** False until the stored settings have been read once, so the UI never flashes the default theme. */
+    val isLoaded: StateFlow<Boolean> = _isLoaded.asStateFlow()
+
     val settings: StateFlow<UserSettings> = combine(repository.settings, nameDraft) { stored, draft ->
         if (draft == null) stored else stored.copy(userName = draft)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, UserSettings())
+    }
+        .onEach { _isLoaded.value = true }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, UserSettings())
 
     fun onUserNameChange(name: String) {
         nameDraft.value = name

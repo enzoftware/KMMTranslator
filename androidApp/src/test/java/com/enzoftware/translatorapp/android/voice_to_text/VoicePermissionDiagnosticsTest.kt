@@ -67,3 +67,36 @@ class VoicePermissionDiagnosticsTest {
         assertThat(d.headlineRes).isEqualTo(R.string.voice_error_title)
     }
 }
+
+class ClassifyMicPermissionResultTest {
+
+    private fun classify(granted: Boolean = false, before: Boolean = false, after: Boolean = false, deniedBefore: Boolean = false) =
+        com.enzoftware.translatorapp.android.voice_to_text.presentation.classifyMicPermissionResult(granted, before, after, deniedBefore)
+
+    @Test
+    fun `granting always wins`() {
+        assertThat(classify(granted = true, before = true, deniedBefore = true)).isEqualTo(MicPermission.GRANTED)
+    }
+
+    @Test
+    fun `dismissing the very first dialog is not a block`() {
+        assertThat(classify()).isEqualTo(MicPermission.DENIED)
+    }
+
+    @Test
+    fun `tapping dont allow can still be asked again`() {
+        assertThat(classify(after = true)).isEqualTo(MicPermission.DENIED)
+        assertThat(classify(before = true, after = true, deniedBefore = true)).isEqualTo(MicPermission.DENIED)
+    }
+
+    @Test
+    fun `a second denial makes it permanent`() {
+        assertThat(classify(before = true, after = false)).isEqualTo(MicPermission.BLOCKED)
+    }
+
+    @Test
+    fun `an auto-denied request after an earlier denial is blocked`() {
+        // Next app session: no rationale before or after, but a denial was remembered.
+        assertThat(classify(deniedBefore = true)).isEqualTo(MicPermission.BLOCKED)
+    }
+}

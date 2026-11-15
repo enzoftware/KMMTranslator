@@ -7,6 +7,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,7 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,6 +30,7 @@ import androidx.navigation.toRoute
 import com.enzoftware.translatorapp.android.core.designsystem.CozyMotion
 import com.enzoftware.translatorapp.android.core.designsystem.CozyTheme
 import com.enzoftware.translatorapp.android.core.presentation.Route
+import com.enzoftware.translatorapp.android.core.presentation.StartupTheme
 import com.enzoftware.translatorapp.android.settings.presentation.SettingsScreen
 import com.enzoftware.translatorapp.android.settings.presentation.SettingsViewModel
 import com.enzoftware.translatorapp.android.settings.presentation.appVersionInfo
@@ -44,11 +48,20 @@ class MainActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val startupTheme = StartupTheme(this)
+        // Pre-Android 12 the splash is drawn in-app from this theme; 12+ uses the app night mode.
+        if (startupTheme.isDark) setTheme(R.style.AppTheme_Starting_Dark)
+        // Keep the splash up until the saved theme is known, so a Dark user never sees a Light frame.
+        installSplashScreen().setKeepOnScreenCondition { !settingsViewModel.isLoaded.value }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val isLoaded by settingsViewModel.isLoaded.collectAsStateWithLifecycle()
+            if (!isLoaded) return@setContent
             val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
             val isDark = settings.theme.isDark
+
+            LaunchedEffect(isDark) { startupTheme.remember(isDark) }
 
             // The app theme is chosen in Settings (not by the system), so the system bar icons follow it.
             DisposableEffect(isDark) {
@@ -94,13 +107,14 @@ fun TranslateRoot(settingsViewModel: SettingsViewModel) {
                 settings = settings,
                 onEvent = { event ->
                     when (event) {
-                        is TranslateEvent.RecordAudio ->
+                        is TranslateEvent.RecordAudio -> entry.ifResumed {
                             navController.navigate(Route.VoiceToText(state.fromLanguage.language.code))
+                        }
 
                         else -> viewModel.onEvent(event)
                     }
                 },
-                onOpenSettings = { navController.navigate(Route.Settings) },
+                onOpenSettings = { entry.ifResumed { navController.navigate(Route.Settings) } },
             )
         }
 
@@ -117,12 +131,14 @@ fun TranslateRoot(settingsViewModel: SettingsViewModel) {
                 state = state,
                 languageCode = route.languageCode,
                 onResult = { result ->
-                    navController.previousBackStackEntry?.savedStateHandle?.set(VOICE_RESULT_KEY, result)
-                    navController.popBackStack()
+                    entry.ifResumed {
+                        navController.previousBackStackEntry?.savedStateHandle?.set(VOICE_RESULT_KEY, result)
+                        navController.popBackStack()
+                    }
                 },
                 onEvent = { event ->
                     when (event) {
-                        is VoiceToTextEvent.Close -> navController.popBackStack()
+                        is VoiceToTextEvent.Close -> entry.ifResumed { navController.popBackStack() }
                         else -> viewModel.onEvent(event)
                     }
                 },
@@ -132,7 +148,7 @@ fun TranslateRoot(settingsViewModel: SettingsViewModel) {
         composable<Route.Settings>(
             enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, CozyMotion.cozy()) },
             popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, CozyMotion.cozy()) },
-        ) {
+        ) { entry ->
             val context = LocalContext.current
             val versionInfo = remember { context.appVersionInfo() }
             SettingsScreen(
@@ -140,8 +156,17 @@ fun TranslateRoot(settingsViewModel: SettingsViewModel) {
                 versionInfo = versionInfo,
                 onUserNameChange = settingsViewModel::onUserNameChange,
                 onThemeChange = settingsViewModel::onThemeChange,
-                onBack = { navController.popBackStack() },
+                onBack = { entry.ifResumed { navController.popBackStack() } },
             )
         }
     }
+}
+
+/**
+ * Runs [action] only while this destination is the resumed one. Double taps and taps during an
+ * exit transition would otherwise navigate twice: pushing a duplicate screen, or popping the start
+ * destination and leaving an empty NavHost.
+ */
+private inline fun NavBackStackEntry.ifResumed(action: () -> Unit) {
+    if (lifecycle.currentState == Lifecycle.State.RESUMED) action()
 }

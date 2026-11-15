@@ -40,6 +40,21 @@ class SettingsViewModelTest {
     }
 
     @Test
+    fun `is not loaded until the repository emits`() = runTest {
+        val gate = kotlinx.coroutines.flow.MutableSharedFlow<UserSettings>()
+        val slowRepository = object : com.enzoftware.translatorapp.android.settings.domain.SettingsRepository by repository {
+            override val settings = gate
+        }
+        val viewModel = SettingsViewModel(slowRepository)
+        assertThat(viewModel.isLoaded.value).isEqualTo(false)
+
+        gate.emit(UserSettings(theme = AppTheme.DARK))
+
+        assertThat(viewModel.isLoaded.value).isEqualTo(true)
+        assertThat(viewModel.settings.value.theme).isEqualTo(AppTheme.DARK)
+    }
+
+    @Test
     fun `name edits show up immediately and are persisted`() = runTest {
         val viewModel = SettingsViewModel(repository)
 
