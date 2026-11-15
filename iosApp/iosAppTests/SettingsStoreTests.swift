@@ -22,10 +22,10 @@ struct SettingsStoreTests {
 
         #expect(store.userName == "")
         #expect(store.trimmedUserName == "")
-        #expect(store.initials == "Y")
+        #expect(store.initials == "P")
         #expect(store.theme == .light)
         #expect(store.isDarkMode == false)
-        #expect(store.versionInfo.appName == "Yapper")
+        #expect(store.versionInfo.appName == "Parley")
         #expect(!store.versionInfo.displayVersion.isEmpty)
     }
 
@@ -67,9 +67,9 @@ struct SettingsStoreTests {
     }
 
     @Test func appVersionInfoFormatsVersionAndBuildCleanly() {
-        let versionWithBuild = AppVersionInfo(appName: "Yapper", shortVersion: "2.1", buildNumber: "42")
-        let matchingBuild = AppVersionInfo(appName: "Yapper", shortVersion: "1.0", buildNumber: "1.0")
-        let emptyBuild = AppVersionInfo(appName: "Yapper", shortVersion: "1.0", buildNumber: "")
+        let versionWithBuild = AppVersionInfo(appName: "Parley", shortVersion: "2.1", buildNumber: "42")
+        let matchingBuild = AppVersionInfo(appName: "Parley", shortVersion: "1.0", buildNumber: "1.0")
+        let emptyBuild = AppVersionInfo(appName: "Parley", shortVersion: "1.0", buildNumber: "")
 
         #expect(versionWithBuild.displayVersion == "2.1 (42)")
         #expect(matchingBuild.displayVersion == "1.0")

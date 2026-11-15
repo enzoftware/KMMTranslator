@@ -87,7 +87,7 @@ struct SettingsScreen: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(
                         settingsStore.trimmedUserName.isEmpty
-                            ? "Friendly Yapper"
+                            ? "Word Traveler"
                             : "Hi, \(settingsStore.trimmedUserName)!"
                     )
                     .font(.system(.headline, design: .rounded, weight: .bold))
@@ -152,28 +152,14 @@ struct SettingsScreen: View {
 
     private var appearanceSection: some View {
         VStack(alignment: .leading, spacing: CozyTheme.Spacing.md) {
-            HStack {
+            VStack(alignment: .leading, spacing: 3) {
                 Label("Appearance", systemImage: "paintpalette.fill")
                     .font(.system(.headline, design: .rounded, weight: .bold))
                     .foregroundStyle(CozyTheme.Colors.inkPrimary)
 
-                Spacer()
-
-                Toggle(isOn: Binding(
-                    get: { settingsStore.isDarkMode },
-                    set: { newValue in
-                        withAnimation(CozyTheme.Motion.cozySpring) {
-                            settingsStore.isDarkMode = newValue
-                        }
-                    }
-                )) {
-                    Text("Dark Theme")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(CozyTheme.Colors.inkSecondary)
-                }
-                .labelsHidden()
-                .tint(CozyTheme.Colors.indigo)
-                .accessibilityLabel("Toggle dark theme")
+                Text("Pick your favorite paper mood")
+                    .font(.caption)
+                    .foregroundStyle(CozyTheme.Colors.inkSecondary)
             }
 
             HStack(spacing: CozyTheme.Spacing.sm) {

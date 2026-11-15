@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct SwapLanguageButton: View {
+    var size: CGFloat = 38
     var onClick: () -> Void
     @State private var swapCount = 0
 
@@ -22,7 +23,7 @@ struct SwapLanguageButton: View {
             ZStack {
                 Circle()
                     .fill(CozyTheme.Colors.indigo)
-                    .frame(width: 38, height: 38)
+                    .frame(width: size, height: size)
                     .shadow(
                         color: CozyTheme.Colors.indigo.opacity(0.3),
                         radius: 8,
@@ -31,7 +32,7 @@ struct SwapLanguageButton: View {
                     )
 
                 Image(systemName: "arrow.left.arrow.right")
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.system(size: size * 0.36, weight: .bold))
                     .foregroundStyle(CozyTheme.Colors.onIndigo)
                     .rotationEffect(.degrees(Double(swapCount) * 180))
             }

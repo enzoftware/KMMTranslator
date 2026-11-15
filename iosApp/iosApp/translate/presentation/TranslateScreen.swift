@@ -17,6 +17,7 @@ struct TranslateScreen: View {
     @EnvironmentObject private var settingsStore: SettingsStore
 
     @Namespace private var voiceNamespace
+    @State private var isHistoryExpanded = false
 
     init(
         historyDataSource: HistoryDataSource,
@@ -34,11 +35,8 @@ struct TranslateScreen: View {
         ZStack(alignment: .bottom) {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: CozyTheme.Spacing.lg) {
-                    headerSection
+                    personalGreetingBar
                         .cozyEntrance(delay: 0.0)
-
-                    languageBar
-                        .cozyEntrance(delay: 0.05)
 
                     TranslateTextField(
                         fromText: Binding(
@@ -59,19 +57,20 @@ struct TranslateScreen: View {
                             }
                         }
                     )
-                    .cozyEntrance(delay: 0.1)
+                    .cozyEntrance(delay: 0.06)
 
-                    historySection
-                        .cozyEntrance(delay: 0.15)
+                    phrasebookSection
+                        .cozyEntrance(delay: 0.12)
                 }
                 .padding(.horizontal, CozyTheme.Spacing.md)
                 .padding(.top, CozyTheme.Spacing.sm)
-                .padding(.bottom, 104)
+                .padding(.bottom, 108)
             }
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)
 
-            floatingVoiceDock
+            bottomCommandDock
+                .padding(.horizontal, CozyTheme.Spacing.md)
                 .padding(.bottom, CozyTheme.Spacing.md)
         }
         .overlay(alignment: .top) {
@@ -97,140 +96,136 @@ struct TranslateScreen: View {
         }
     }
 
-    private var headerSection: some View {
+    private var personalGreetingBar: some View {
         HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(settingsStore.versionInfo.appName)
-                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
-                    .foregroundStyle(CozyTheme.Colors.inkPrimary)
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(CozyTheme.Colors.indigoSoft)
+                        .frame(width: 40, height: 40)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(CozyTheme.Colors.indigo.opacity(0.22), lineWidth: 1)
+                        )
 
-                Text(
-                    settingsStore.trimmedUserName.isEmpty
-                        ? "Warm notes for all your yapping"
-                        : "Hey \(settingsStore.trimmedUserName), ready to translate?"
-                )
-                .font(.subheadline)
-                .foregroundStyle(CozyTheme.Colors.inkSecondary)
-                .contentTransition(.interpolate)
+                    Text(settingsStore.initials)
+                        .font(.system(.subheadline, design: .rounded, weight: .bold))
+                        .foregroundStyle(CozyTheme.Colors.indigo)
+                        .contentTransition(.numericText())
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(timeGreeting.uppercased())
+                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .tracking(1.1)
+                        .foregroundStyle(CozyTheme.Colors.inkMuted)
+
+                    Text(
+                        settingsStore.trimmedUserName.isEmpty
+                            ? "Pocket Phrasebook"
+                            : "Hi, \(settingsStore.trimmedUserName)"
+                    )
+                    .font(.system(.title3, design: .serif, weight: .semibold))
+                    .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                    .contentTransition(.interpolate)
+                }
             }
 
             Spacer()
 
             CozyGlassContainer(spacing: 8) {
-                HStack(spacing: 8) {
-                    Button {
-                        withAnimation(CozyTheme.Motion.cozySpring) {
-                            settingsStore.toggleTheme()
-                        }
-                    } label: {
-                        Image(systemName: settingsStore.theme.iconName)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(CozyTheme.Colors.indigo)
-                            .contentTransition(.symbolEffect(.replace))
-                            .frame(width: 38, height: 38)
-                            .cozyFloatingChrome(in: Circle(), interactive: true)
-                    }
-                    .buttonStyle(CozyScaleButtonStyle())
-                    .sensoryFeedback(.selection, trigger: settingsStore.theme)
-                    .accessibilityLabel(
-                        settingsStore.isDarkMode ? "Switch to light theme" : "Switch to dark theme"
-                    )
-
-                    NavigationLink {
-                        SettingsScreen()
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(CozyTheme.Colors.inkPrimary)
-                            .frame(width: 38, height: 38)
-                            .cozyFloatingChrome(in: Circle(), interactive: true)
-                    }
-                    .buttonStyle(CozyScaleButtonStyle())
-                    .accessibilityLabel("Open settings")
+                NavigationLink {
+                    SettingsScreen()
+                } label: {
+                    Image(systemName: "gearshape.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                        .frame(width: 40, height: 40)
+                        .cozyFloatingChrome(in: Circle(), interactive: true)
                 }
+                .buttonStyle(CozyScaleButtonStyle())
+                .accessibilityLabel("Open settings")
             }
         }
         .padding(.top, 4)
     }
 
-    private var languageBar: some View {
-        CozyGlassContainer(spacing: 10) {
-            HStack(spacing: 10) {
-                LanguageDropdown(
-                    language: viewModel.state.fromLanguage,
-                    isOpen: viewModel.state.isChoosingFromLanguage,
-                    selectedLanguage: { language in
-                        withAnimation(CozyTheme.Motion.snappySpring) {
-                            viewModel.onEvent(
-                                event: TranslateEvent.ChooseFromLanguage(language: language)
-                            )
-                        }
-                    }
-                )
+    @ViewBuilder
+    private var phrasebookSection: some View {
+        VStack(alignment: .leading, spacing: CozyTheme.Spacing.sm) {
+            HStack(alignment: .center) {
+                HStack(spacing: 8) {
+                    Text("Saved Postcards")
+                        .font(.system(.headline, design: .rounded, weight: .bold))
+                        .foregroundStyle(CozyTheme.Colors.inkPrimary)
 
-                SwapLanguageButton {
-                    withAnimation(CozyTheme.Motion.cozySpring) {
-                        viewModel.onEvent(event: TranslateEvent.SwapLanguages())
+                    if !viewModel.state.history.isEmpty {
+                        Text("\(viewModel.state.history.count)")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(CozyTheme.Colors.indigo)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(
+                                Capsule()
+                                    .fill(CozyTheme.Colors.indigoSoft)
+                            )
+                            .contentTransition(.numericText())
                     }
                 }
 
-                LanguageDropdown(
-                    language: viewModel.state.toLanguage,
-                    isOpen: viewModel.state.isChoosingToLanguage,
-                    selectedLanguage: { language in
-                        withAnimation(CozyTheme.Motion.snappySpring) {
-                            viewModel.onEvent(
-                                event: TranslateEvent.ChooseToLanguage(language: language)
-                            )
-                        }
-                    }
-                )
-            }
-            .padding(8)
-            .cozyFloatingChrome(in: Capsule(), interactive: true)
-        }
-    }
-
-    @ViewBuilder
-    private var historySection: some View {
-        VStack(alignment: .leading, spacing: CozyTheme.Spacing.sm) {
-            HStack {
-                Text("Recent Translations")
-                    .font(.system(.title3, design: .rounded, weight: .bold))
-                    .foregroundStyle(CozyTheme.Colors.inkPrimary)
-
                 Spacer()
 
-                if !viewModel.state.history.isEmpty {
-                    Text("\(viewModel.state.history.count) saved")
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(CozyTheme.Colors.inkMuted)
-                        .contentTransition(.numericText())
+                if viewModel.state.history.count > 1 {
+                    Button {
+                        withAnimation(CozyTheme.Motion.cozySpring) {
+                            isHistoryExpanded.toggle()
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: isHistoryExpanded ? "rectangle.split.3x1" : "list.bullet")
+                            Text(isHistoryExpanded ? "Shelf" : "See all")
+                        }
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(CozyTheme.Colors.indigo)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(CozyTheme.Colors.indigoSoft.opacity(0.75))
+                        )
+                    }
+                    .buttonStyle(CozyScaleButtonStyle())
                 }
             }
 
             if viewModel.state.history.isEmpty {
-                VStack(spacing: 10) {
-                    Image(systemName: "text.bubble")
-                        .font(.title2)
-                        .foregroundStyle(CozyTheme.Colors.indigo.opacity(0.75))
-                        .symbolEffect(.pulse.byLayer)
+                HStack(spacing: 14) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(CozyTheme.Colors.indigoSoft)
+                            .frame(width: 46, height: 46)
 
-                    Text("No translations yet")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                        Image(systemName: "book.pages.fill")
+                            .font(.title3)
+                            .foregroundStyle(CozyTheme.Colors.indigo)
+                    }
 
-                    Text("Your recent phrases will settle right here for quick replay.")
-                        .font(.caption)
-                        .foregroundStyle(CozyTheme.Colors.inkSecondary)
-                        .multilineTextAlignment(.center)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Your shelf is waiting")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(CozyTheme.Colors.inkPrimary)
+
+                        Text("Translate a line above or tap a starter idiom to save your first postcard.")
+                            .font(.caption)
+                            .foregroundStyle(CozyTheme.Colors.inkSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, CozyTheme.Spacing.lg)
-                .padding(.horizontal, CozyTheme.Spacing.md)
-                .cozyCard(cornerRadius: 20)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(CozyTheme.Spacing.md)
+                .cozyCard(cornerRadius: 22)
                 .transition(.blurReplace)
-            } else {
+            } else if isHistoryExpanded {
                 LazyVStack(spacing: CozyTheme.Spacing.sm) {
                     ForEach(Array(viewModel.state.history.enumerated()), id: \.element.id) { index, item in
                         TranslateHistoryItem(item: item) {
@@ -241,51 +236,117 @@ struct TranslateScreen: View {
                             }
                         }
                         .cozyEntrance(delay: CozyTheme.Motion.staggeredDelay(for: index))
-                        .scrollTransition(.interactive, axis: .vertical) { content, phase in
-                            content
-                                .opacity(phase.isIdentity ? 1.0 : 0.74)
-                                .scaleEffect(phase.isIdentity ? 1.0 : 0.96)
-                        }
                     }
                 }
+                .transition(.blurReplace)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 12) {
+                        ForEach(viewModel.state.history, id: \.id) { item in
+                            TranslateHistoryItem(item: item, isPostcardShelf: true) {
+                                withAnimation(CozyTheme.Motion.cozySpring) {
+                                    viewModel.onEvent(
+                                        event: .SelectHistoryItem(item: item)
+                                    )
+                                }
+                            }
+                            .scrollTransition(.interactive, axis: .horizontal) { content, phase in
+                                content
+                                    .scaleEffect(phase.isIdentity ? 1.0 : 0.95)
+                                    .opacity(phase.isIdentity ? 1.0 : 0.85)
+                            }
+                        }
+                    }
+                    .scrollTargetLayout()
+                    .padding(.vertical, 4)
+                }
+                .scrollTargetBehavior(.viewAligned)
+                .contentMargins(.horizontal, CozyTheme.Spacing.md, for: .scrollContent)
+                .padding(.horizontal, -CozyTheme.Spacing.md)
+                .transition(.blurReplace)
             }
         }
     }
 
-    private var floatingVoiceDock: some View {
-        CozyGlassContainer(spacing: 12) {
-            NavigationLink {
-                VoiceToTextScreen(
-                    onResult: { spokenText in
-                        viewModel.onEvent(
-                            event: TranslateEvent.SubmitVoiceResult(result: spokenText)
-                        )
-                    },
-                    voiceToTextParser: voiceToTextParser,
-                    languageCode: viewModel.state.fromLanguage.language.code
-                )
-                .navigationTransition(.zoom(sourceID: "voice_recorder", in: voiceNamespace))
-            } label: {
-                HStack(spacing: 10) {
-                    Image(systemName: "mic.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .symbolEffect(.pulse.wholeSymbol, isActive: false)
+    private var bottomCommandDock: some View {
+        CozyGlassContainer(spacing: 8) {
+            HStack(spacing: 8) {
+                HStack(spacing: 4) {
+                    LanguageDropdown(
+                        language: viewModel.state.fromLanguage,
+                        isOpen: viewModel.state.isChoosingFromLanguage,
+                        compact: true,
+                        selectedLanguage: { language in
+                            withAnimation(CozyTheme.Motion.snappySpring) {
+                                viewModel.onEvent(
+                                    event: TranslateEvent.ChooseFromLanguage(language: language)
+                                )
+                            }
+                        }
+                    )
 
-                    Text("Voice Input")
-                        .font(.subheadline.weight(.semibold))
+                    SwapLanguageButton(size: 34) {
+                        withAnimation(CozyTheme.Motion.cozySpring) {
+                            viewModel.onEvent(event: TranslateEvent.SwapLanguages())
+                        }
+                    }
+
+                    LanguageDropdown(
+                        language: viewModel.state.toLanguage,
+                        isOpen: viewModel.state.isChoosingToLanguage,
+                        compact: true,
+                        selectedLanguage: { language in
+                            withAnimation(CozyTheme.Motion.snappySpring) {
+                                viewModel.onEvent(
+                                    event: TranslateEvent.ChooseToLanguage(language: language)
+                                )
+                            }
+                        }
+                    )
                 }
-                .foregroundStyle(CozyTheme.Colors.onIndigo)
-                .padding(.horizontal, 22)
-                .padding(.vertical, 14)
-                .cozyFloatingChrome(
-                    in: Capsule(),
-                    tint: CozyTheme.Colors.indigo,
-                    interactive: true
-                )
+                .padding(6)
+                .cozyFloatingChrome(in: Capsule(), interactive: true)
+
+                NavigationLink {
+                    VoiceToTextScreen(
+                        onResult: { spokenText in
+                            viewModel.onEvent(
+                                event: TranslateEvent.SubmitVoiceResult(result: spokenText)
+                            )
+                        },
+                        voiceToTextParser: voiceToTextParser,
+                        languageCode: viewModel.state.fromLanguage.language.code
+                    )
+                    .navigationTransition(.zoom(sourceID: "voice_recorder", in: voiceNamespace))
+                } label: {
+                    Image(systemName: "mic.fill")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(CozyTheme.Colors.onIndigo)
+                        .frame(width: 50, height: 50)
+                        .cozyFloatingChrome(
+                            in: Circle(),
+                            tint: CozyTheme.Colors.indigo,
+                            interactive: true
+                        )
+                }
+                .buttonStyle(CozyScaleButtonStyle())
+                .matchedTransitionSource(id: "voice_recorder", in: voiceNamespace)
+                .accessibilityLabel("Open voice translator")
             }
-            .buttonStyle(CozyScaleButtonStyle())
-            .matchedTransitionSource(id: "voice_recorder", in: voiceNamespace)
-            .accessibilityLabel("Open voice translator")
+        }
+    }
+
+    private var timeGreeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 5..<12:
+            return "Good morning"
+        case 12..<17:
+            return "Good afternoon"
+        case 17..<22:
+            return "Good evening"
+        default:
+            return "Late night notes"
         }
     }
 

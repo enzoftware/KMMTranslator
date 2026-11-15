@@ -30,6 +30,7 @@ struct TranslateTextField: View {
                 IdleTextField(
                     fromText: $fromText,
                     fromLanguage: fromLanguage,
+                    toLanguage: toLanguage,
                     isTranslating: isTranslating,
                     isEditorFocused: $isEditorFocused,
                     onTranslateEvent: onTranslateEvent
@@ -61,9 +62,17 @@ extension TranslateTextField {
     fileprivate struct IdleTextField: View {
         @Binding var fromText: String
         let fromLanguage: UiLanguage
+        let toLanguage: UiLanguage
         let isTranslating: Bool
         @FocusState.Binding var isEditorFocused: Bool
         let onTranslateEvent: (TranslateEvent) -> Void
+
+        private let starterIdioms = [
+            "Break a leg",
+            "Spill the tea",
+            "Piece of cake",
+            "Under the weather"
+        ]
 
         private var isBlank: Bool {
             fromText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -71,8 +80,22 @@ extension TranslateTextField {
 
         var body: some View {
             VStack(alignment: .leading, spacing: CozyTheme.Spacing.sm) {
-                HStack {
+                HStack(spacing: 8) {
                     LanguageDisplay(language: fromLanguage)
+
+                    Image(systemName: "arrow.right")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(CozyTheme.Colors.inkMuted)
+
+                    Text(toLanguage.language.languageName)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(CozyTheme.Colors.indigo)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(CozyTheme.Colors.indigoSoft)
+                        )
 
                     Spacer()
 
@@ -102,11 +125,11 @@ extension TranslateTextField {
 
                 ZStack(alignment: .topLeading) {
                     if fromText.isEmpty {
-                        Text("Write or paste something to translate...")
-                            .font(.body)
+                        Text("Write a thought, quote, or idiom…")
+                            .font(.system(.body, design: .serif))
                             .foregroundStyle(CozyTheme.Colors.inkMuted)
-                            .padding(.top, 8)
-                            .padding(.leading, 5)
+                            .padding(.top, 10)
+                            .padding(.leading, 8)
                             .allowsHitTesting(false)
                     }
 
@@ -115,7 +138,8 @@ extension TranslateTextField {
                         .font(.body)
                         .foregroundStyle(CozyTheme.Colors.inkPrimary)
                         .scrollContentBackground(.hidden)
-                        .frame(minHeight: 148, maxHeight: 220, alignment: .topLeading)
+                        .padding(4)
+                        .frame(minHeight: 132, maxHeight: 200, alignment: .topLeading)
                         .disabled(isTranslating)
                         .toolbar {
                             ToolbarItemGroup(placement: .keyboard) {
@@ -127,6 +151,53 @@ extension TranslateTextField {
                                 .foregroundStyle(CozyTheme.Colors.indigo)
                             }
                         }
+                }
+                .background(
+                    RoundedRectangle(cornerRadius: CozyTheme.Radius.inner, style: .continuous)
+                        .fill(CozyTheme.Colors.paperMuted.opacity(0.32))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: CozyTheme.Radius.inner, style: .continuous)
+                        .strokeBorder(
+                            isEditorFocused ? CozyTheme.Colors.indigo.opacity(0.45) : CozyTheme.Colors.borderSubtle.opacity(0.7),
+                            lineWidth: 1
+                        )
+                )
+
+                if fromText.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(starterIdioms, id: \.self) { phrase in
+                                Button {
+                                    withAnimation(CozyTheme.Motion.snappySpring) {
+                                        onTranslateEvent(.ChangeTranslationText(text: phrase))
+                                    }
+                                } label: {
+                                    HStack(spacing: 5) {
+                                        Image(systemName: "quote.opening")
+                                            .font(.system(size: 9, weight: .bold))
+                                            .foregroundStyle(CozyTheme.Colors.indigo)
+
+                                        Text(phrase)
+                                            .font(.caption.weight(.medium))
+                                            .foregroundStyle(CozyTheme.Colors.inkSecondary)
+                                    }
+                                    .padding(.horizontal, 11)
+                                    .padding(.vertical, 7)
+                                    .background(
+                                        Capsule()
+                                            .fill(CozyTheme.Colors.paperMuted.opacity(0.65))
+                                    )
+                                    .overlay(
+                                        Capsule()
+                                            .strokeBorder(CozyTheme.Colors.borderSubtle, lineWidth: 1)
+                                    )
+                                }
+                                .buttonStyle(CozyScaleButtonStyle())
+                            }
+                        }
+                    }
+                    .transition(.blurReplace)
                 }
 
                 HStack(alignment: .center) {
@@ -190,7 +261,7 @@ struct TranslatedTextField: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(fromText)
-                        .font(.body)
+                        .font(.subheadline)
                         .foregroundStyle(CozyTheme.Colors.inkSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -198,6 +269,11 @@ struct TranslatedTextField: View {
                         .font(.caption2.weight(.medium))
                         .foregroundStyle(CozyTheme.Colors.inkMuted)
                 }
+                .padding(12)
+                .background(
+                    RoundedRectangle(cornerRadius: CozyTheme.Radius.inner, style: .continuous)
+                        .fill(CozyTheme.Colors.paperMuted.opacity(0.35))
+                )
                 .contentShape(Rectangle())
                 .onTapGesture {
                     tts.stop()
@@ -212,9 +288,9 @@ struct TranslatedTextField: View {
                     .fill(CozyTheme.Colors.borderSubtle)
                     .frame(height: 1)
 
-                Image(systemName: "arrow.down.circle.fill")
-                    .font(.caption)
-                    .foregroundStyle(CozyTheme.Colors.indigo.opacity(0.6))
+                Image(systemName: "sparkles")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(CozyTheme.Colors.indigo.opacity(0.75))
 
                 Rectangle()
                     .fill(CozyTheme.Colors.borderSubtle)
@@ -238,28 +314,37 @@ struct TranslatedTextField: View {
                 }
 
                 Text(toText)
-                    .font(.title3.weight(.medium))
+                    .font(.system(.title2, design: .serif, weight: .medium))
                     .foregroundStyle(CozyTheme.Colors.inkPrimary)
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .contentTransition(.interpolate)
-                    .padding(.top, 2)
+                    .padding(.top, 4)
             }
         }
     }
 }
 
-#Preview {
-    VStack {
+#Preview("Idle & Translated") {
+    VStack(spacing: 16) {
         TranslateTextField(
-            fromText: .constant("Hello, how are you today?"),
-            toText: "Hola, ¿cómo estás hoy?",
+            fromText: .constant(""),
+            toText: nil,
             isTranslating: false,
             fromLanguage: UiLanguage(language: .english, imagePath: "english"),
             toLanguage: UiLanguage(language: .spanish, imagePath: "spanish"),
             onTranslateEvent: { _ in }
         )
-        .padding()
+
+        TranslateTextField(
+            fromText: .constant("Break a leg tonight!"),
+            toText: "¡Mucha suerte esta noche!",
+            isTranslating: false,
+            fromLanguage: UiLanguage(language: .english, imagePath: "english"),
+            toLanguage: UiLanguage(language: .spanish, imagePath: "spanish"),
+            onTranslateEvent: { _ in }
+        )
     }
+    .padding()
     .background(CozyAmbientBackground())
 }

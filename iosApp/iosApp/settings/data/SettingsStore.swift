@@ -56,7 +56,7 @@ struct AppVersionInfo: Equatable {
         let info = bundle.infoDictionary
         self.appName = (info?["CFBundleDisplayName"] as? String)
             ?? (info?["CFBundleName"] as? String)
-            ?? "Yapper"
+            ?? "Parley"
         self.shortVersion = (info?["CFBundleShortVersionString"] as? String) ?? "1.0"
         self.buildNumber = (info?["CFBundleVersion"] as? String) ?? "1"
     }
@@ -130,7 +130,7 @@ final class SettingsStore: ObservableObject {
             .prefix(2)
             .compactMap(\.first)
         if components.isEmpty {
-            return "Y"
+            return "P"
         }
         return String(components).uppercased()
     }
