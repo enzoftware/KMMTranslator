@@ -8,6 +8,8 @@ class IosHistoryDatabaseTest : HistoryDatabaseContract() {
     override fun inMemoryDatabaseBuilder(): RoomDatabase.Builder<TranslatorDatabase> =
         Room.inMemoryDatabaseBuilder<TranslatorDatabase>()
 
-    override fun scratchLegacyFile(): LegacyDatabaseFile =
-        IosLegacyDatabaseFile("${NSTemporaryDirectory()}legacy-translator-test.db")
+    override fun fileDatabaseBuilder(path: String): RoomDatabase.Builder<TranslatorDatabase> =
+        Room.databaseBuilder<TranslatorDatabase>(name = path)
+
+    override fun scratchFile(name: String): LegacyDatabaseFile = IosLegacyDatabaseFile("${NSTemporaryDirectory()}$name")
 }

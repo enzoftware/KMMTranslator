@@ -26,7 +26,10 @@ Put logic in `shared` whenever it is not platform UI or a platform API.
 ./rebuild_ios_framework.sh                       # after changing shared Kotlin, before building iOS
 ```
 
-iOS: open `iosApp/iosApp.xcworkspace` (the workspace, not the `.xcodeproj`) and run or test the `iosApp` scheme. Swift tests live in `iosAppTests/`.
+iOS: open `iosApp/iosApp.xcworkspace` (the workspace, not the `.xcodeproj`) and run or test the `iosApp` scheme.
+
+- Swift tests live in `iosAppTests/`. That folder is synced, so new test files are picked up automatically.
+- The `iosApp` app target lists its sources explicitly. Every new app Swift file must be added to `project.pbxproj` (through Xcode, or by mirroring an existing entry), or it won't compile into the app.
 
 Versions are in `gradle/libs.versions.toml`.
 
@@ -48,6 +51,11 @@ Versions are in `gradle/libs.versions.toml`.
   - Schema changes: bump `version`, add a `Migration`, and commit the regenerated JSON in `shared/schemas/`.
   - `LegacyHistoryImporter` copies history from the pre-Room SQLDelight `translator.db` once, then deletes it. Keep it until no supported install can still have that file.
   - No `iosX64`: Room 3 and `sqlite-bundled` don't ship Intel-simulator binaries.
+  - Tables: `historyEntity` (v1) and `savedWordEntity` (v2, "My Words", added by an `AutoMigration`). Both data sources share one database through `TranslatorStorage`.
+- **Phrasebook:**
+  - The built-in phrases live in `phrasebook/domain/Phrasebook.kt`. Every entry needs a translation for every `Language`; `PhrasebookTest` fails otherwise.
+  - Entry `key`s are persisted in saved words, so never rename a key that has shipped.
+  - `TranslateEvent.ShowPhrasebookEntry` shows a phrase offline and adds no history.
 - **Backend:** `KtorTranslateClient` posts JSON to `https://translate.pl-coding.com/translate`. The service is sometimes unavailable; the UI shows an error banner.
 
 ## UI parity

@@ -30,6 +30,10 @@ import androidx.navigation.toRoute
 import com.enzoftware.translatorapp.android.core.designsystem.CozyMotion
 import com.enzoftware.translatorapp.android.core.designsystem.CozyTheme
 import com.enzoftware.translatorapp.android.core.presentation.Route
+import com.enzoftware.translatorapp.android.phrasebook.presentation.AndroidPhrasebookViewModel
+import com.enzoftware.translatorapp.android.phrasebook.presentation.PhrasebookScreen
+import com.enzoftware.translatorapp.core.presentation.UiLanguage
+import com.enzoftware.translatorapp.phrasebook.presentation.PhrasebookEvent
 import com.enzoftware.translatorapp.android.core.presentation.StartupTheme
 import com.enzoftware.translatorapp.android.settings.presentation.SettingsScreen
 import com.enzoftware.translatorapp.android.settings.presentation.SettingsViewModel
@@ -78,6 +82,7 @@ class MainActivity : ComponentActivity() {
 }
 
 private const val VOICE_RESULT_KEY = "voiceResult"
+private const val PHRASEBOOK_RESULT_KEY = "phrasebookEntry"
 
 @Composable
 fun TranslateRoot(settingsViewModel: SettingsViewModel) {
@@ -101,6 +106,18 @@ fun TranslateRoot(settingsViewModel: SettingsViewModel) {
                     entry.savedStateHandle[VOICE_RESULT_KEY] = null
                 }
             }
+            // "entryKey|from|to" (codes empty when the current pair should be kept).
+            val phrasebookResult by entry.savedStateHandle
+                .getStateFlow<String?>(PHRASEBOOK_RESULT_KEY, null)
+                .collectAsStateWithLifecycle()
+            LaunchedEffect(phrasebookResult) {
+                phrasebookResult?.split("|")?.let { (key, from, to) ->
+                    viewModel.onEvent(
+                        TranslateEvent.ShowPhrasebookEntry(key, from.ifEmpty { null }, to.ifEmpty { null }),
+                    )
+                    entry.savedStateHandle[PHRASEBOOK_RESULT_KEY] = null
+                }
+            }
 
             TranslateScreen(
                 state = state,
@@ -115,6 +132,13 @@ fun TranslateRoot(settingsViewModel: SettingsViewModel) {
                     }
                 },
                 onOpenSettings = { entry.ifResumed { navController.navigate(Route.Settings) } },
+                onOpenPhrasebook = {
+                    entry.ifResumed {
+                        navController.navigate(
+                            Route.Phrasebook(state.fromLanguage.language.code, state.toLanguage.language.code),
+                        )
+                    }
+                },
             )
         }
 
@@ -142,6 +166,35 @@ fun TranslateRoot(settingsViewModel: SettingsViewModel) {
                         else -> viewModel.onEvent(event)
                     }
                 },
+            )
+        }
+
+        composable<Route.Phrasebook>(
+            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, CozyMotion.cozy()) },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, CozyMotion.cozy()) },
+        ) { entry ->
+            val route = entry.toRoute<Route.Phrasebook>()
+            val viewModel = hiltViewModel<AndroidPhrasebookViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            LaunchedEffect(route) {
+                viewModel.onEvent(
+                    PhrasebookEvent.SetLanguages(
+                        UiLanguage.byCode(route.fromLanguageCode),
+                        UiLanguage.byCode(route.toLanguageCode),
+                    ),
+                )
+            }
+            PhrasebookScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                onUsePhrase = { key, from, to ->
+                    entry.ifResumed {
+                        navController.previousBackStackEntry?.savedStateHandle
+                            ?.set(PHRASEBOOK_RESULT_KEY, "$key|${from.orEmpty()}|${to.orEmpty()}")
+                        navController.popBackStack()
+                    }
+                },
+                onBack = { entry.ifResumed { navController.popBackStack() } },
             )
         }
 

@@ -1,0 +1,111 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "14e24bfe943ce53656dcf21b6c6637cc",
+    "entities": [
+      {
+        "tableName": "historyEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fromLanguageCode` TEXT NOT NULL, `fromText` TEXT NOT NULL, `toLanguage` TEXT NOT NULL, `toText` TEXT NOT NULL, `timestamp` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromLanguageCode",
+            "columnName": "fromLanguageCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromText",
+            "columnName": "fromText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toLanguage",
+            "columnName": "toLanguage",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toText",
+            "columnName": "toText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "savedWordEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`entryKey` TEXT NOT NULL, `fromLanguageCode` TEXT NOT NULL, `fromText` TEXT NOT NULL, `toLanguageCode` TEXT NOT NULL, `toText` TEXT NOT NULL, `savedAt` INTEGER NOT NULL, PRIMARY KEY(`entryKey`, `fromLanguageCode`, `toLanguageCode`))",
+        "fields": [
+          {
+            "fieldPath": "entryKey",
+            "columnName": "entryKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromLanguageCode",
+            "columnName": "fromLanguageCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromText",
+            "columnName": "fromText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toLanguageCode",
+            "columnName": "toLanguageCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toText",
+            "columnName": "toText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "savedAt",
+            "columnName": "savedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "entryKey",
+            "fromLanguageCode",
+            "toLanguageCode"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14e24bfe943ce53656dcf21b6c6637cc')"
+    ]
+  }
+}

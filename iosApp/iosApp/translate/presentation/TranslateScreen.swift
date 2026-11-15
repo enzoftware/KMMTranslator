@@ -11,6 +11,7 @@ import shared
 
 struct TranslateScreen: View {
     private var historyDataSource: HistoryDataSource
+    private let savedWordsDataSource: SavedWordsDataSource
     @StateObject private var voiceToTextParser = IOSVoiceToTextParser()
     private var translateUseCase: TranslateUseCase
     @StateObject var viewModel: IOSTranslateViewModel
@@ -22,9 +23,11 @@ struct TranslateScreen: View {
 
     init(
         historyDataSource: HistoryDataSource,
+        savedWordsDataSource: SavedWordsDataSource,
         translateUseCase: TranslateUseCase
     ) {
         self.historyDataSource = historyDataSource
+        self.savedWordsDataSource = savedWordsDataSource
         self.translateUseCase = translateUseCase
         self._viewModel = StateObject(
             wrappedValue: IOSTranslateViewModel(
@@ -149,6 +152,34 @@ struct TranslateScreen: View {
             Spacer()
 
             CozyGlassContainer(spacing: 8) {
+                NavigationLink {
+                    PhrasebookScreen(
+                        savedWordsDataSource: savedWordsDataSource,
+                        fromLanguage: viewModel.state.fromLanguage,
+                        toLanguage: viewModel.state.toLanguage,
+                        onUsePhrase: { entryKey, fromCode, toCode in
+                            withAnimation(CozyTheme.Motion.cozySpring) {
+                                viewModel.onEvent(
+                                    event: TranslateEvent.ShowPhrasebookEntry(
+                                        entryKey: entryKey,
+                                        fromLanguageCode: fromCode,
+                                        toLanguageCode: toCode
+                                    )
+                                )
+                            }
+                        }
+                    )
+                } label: {
+                    Image(systemName: "book.closed.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(CozyTheme.Colors.inkPrimary)
+                        .frame(width: 40, height: 40)
+                        .cozyFloatingChrome(in: Circle(), interactive: false)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(CozyScaleButtonStyle())
+                .accessibilityLabel("Open phrasebook")
+
                 NavigationLink {
                     SettingsScreen()
                 } label: {

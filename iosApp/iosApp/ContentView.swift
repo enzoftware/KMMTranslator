@@ -9,6 +9,7 @@ struct ContentView: View {
             CozyAmbientBackground()
             TranslateScreen(
                 historyDataSource: appModule.historyDataSource,
+                savedWordsDataSource: appModule.savedWordsDataSource,
                 translateUseCase: appModule.translateUseCase
             )
         }

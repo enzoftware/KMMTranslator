@@ -17,4 +17,14 @@ sealed class TranslateEvent {
     object RecordAudio : TranslateEvent()
     data class SubmitVoiceResult(val result: String?) : TranslateEvent()
     object OnError : TranslateEvent()
+
+    /**
+     * Shows a built-in phrasebook translation, offline and without saving history. With language
+     * codes (a saved word) the pair switches to them; otherwise the current pair is used.
+     */
+    data class ShowPhrasebookEntry(
+        val entryKey: String,
+        val fromLanguageCode: String? = null,
+        val toLanguageCode: String? = null,
+    ) : TranslateEvent()
 }
