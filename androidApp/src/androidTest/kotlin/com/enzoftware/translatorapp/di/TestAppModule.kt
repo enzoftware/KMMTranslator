@@ -1,5 +1,7 @@
 package com.enzoftware.translatorapp.di
 
+import com.enzoftware.translatorapp.android.settings.domain.SettingsRepository
+import com.enzoftware.translatorapp.settings.FakeSettingsRepository
 import com.enzoftware.translatorapp.translate.data.local.FakeHistoryDataSource
 import com.enzoftware.translatorapp.translate.data.remote.FakeTranslateClient
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
@@ -38,4 +40,8 @@ object TestAppModule {
     @Provides
     @Singleton
     fun provideFakeVoiceToTextParser(): VoiceToTextParser = FakeVoiceToTextParser()
+
+    @Provides
+    @Singleton
+    fun provideFakeSettingsRepository(): SettingsRepository = FakeSettingsRepository()
 }

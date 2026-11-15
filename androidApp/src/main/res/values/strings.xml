@@ -1,24 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="close">Close\n</string>
-    <string name="open">Open\n</string>
-    <string name="swap_languages">Swap languages</string>
-    <string name="enter_text">Enter a text to translate</string>
-    <string name="translate">Translate</string>
+    <string name="app_name">Parley</string>
+
+    <!-- Shared chrome -->
     <string name="copy">Copy</string>
-    <string name="speaker">Speaker</string>
-    <string name="translation_copied">Translation copied</string>
-    <string name="history">History</string>
-    <string name="error_service_unavailable">Oops, service Unavailable. Try again later</string>
-    <string name="error_client">Oops, Client Error, reach out service</string>
-    <string name="error_server">Oops, server side error. Wait for support</string>
-    <string name="error_unknown">Sorry, unknown error</string>
-    <string name="record_audio">Record audio</string>
-    <string name="error_speech_not_available">Speech recognition not available</string>
+    <string name="copied">Copied</string>
+    <string name="cd_copy_text">Copy text</string>
+    <string name="cd_copied">Copied to clipboard</string>
+    <string name="listen">Listen</string>
+    <string name="speaking">Speaking</string>
+    <string name="cd_speak_translation">Speak translation</string>
+    <string name="cd_stop_speaking">Stop speaking</string>
+    <string name="cd_dismiss_error">Dismiss error</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Translate: header -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="greeting_late_night">Late night notes</string>
+    <string name="pocket_phrasebook">Pocket Phrasebook</string>
+    <string name="hi_name">Hi, %1$s</string>
+    <string name="cd_open_settings">Open settings</string>
+
+    <!-- Translate: editor -->
+    <string name="enter_text">Write a thought, quote, or idiom…</string>
+    <string name="clear">Clear</string>
+    <string name="chars_count">%1$d chars</string>
+    <string name="translate">Translate</string>
+    <string name="translating">Translating</string>
+    <string name="tap_to_edit">Tap to edit</string>
+    <string name="cd_close_translation">Close translation</string>
+    <string name="idiom_break_a_leg">Break a leg</string>
+    <string name="idiom_spill_the_tea">Spill the tea</string>
+    <string name="idiom_piece_of_cake">Piece of cake</string>
+    <string name="idiom_under_the_weather">Under the weather</string>
+
+    <!-- Translate: dock -->
+    <string name="swap_languages">Swap languages</string>
+    <string name="open_voice_translator">Open voice translator</string>
+    <string name="cd_choose_from_language">Translate from %1$s</string>
+    <string name="cd_choose_to_language">Translate to %1$s</string>
+
+    <!-- Translate: phrasebook -->
+    <string name="saved_postcards">Saved Postcards</string>
+    <string name="see_all">See all</string>
+    <string name="shelf">Shelf</string>
+    <string name="empty_shelf_title">Your shelf is waiting</string>
+    <string name="empty_shelf_message">Translate a line above or tap a starter idiom to save your first postcard.</string>
+    <string name="language_pair">%1$s → %2$s</string>
+
+    <!-- Translate: errors -->
+    <string name="error_service_unavailable">Translation service is temporarily unavailable.</string>
+    <string name="error_client">Couldn\'t send that request. Please check your connection.</string>
+    <string name="error_server">The translation server ran into an issue.</string>
+    <string name="error_unknown">Something went wrong while translating.</string>
+
+    <!-- Voice to text -->
+    <string name="cd_close_voice">Close voice input</string>
+    <string name="listening_in">Listening in %1$s</string>
+    <string name="voice_in">Voice · %1$s</string>
+    <string name="voice_ready_title">Ready when you are</string>
+    <string name="voice_ready_message">Tap the microphone below and start speaking in %1$s.</string>
+    <string name="listening_carefully">Listening carefully...</string>
+    <string name="captured_speech">Captured speech</string>
+    <string name="voice_result_hint">Tap the checkmark to send this text to the translator.</string>
+    <string name="try_again">Try Again</string>
+    <string name="allow_microphone">Allow microphone</string>
+    <string name="start_recording">Start recording</string>
     <string name="stop_recording">Stop recording</string>
-    <string name="apply">Apply</string>
+    <string name="apply">Use spoken text</string>
+    <string name="retry_recording">Retry voice recording</string>
     <string name="record_again">Record again</string>
-    <string name="listening">Listening ...</string>
-    <string name="start_talking">Click to start recording</string>
+    <string name="voice_permission_dialog_title">Voice Permissions Required</string>
+    <string name="voice_mic_needed_title">Microphone access needed</string>
+    <string name="voice_mic_needed_message">Parley needs Microphone access to hear your voice. Tap the microphone to allow it.</string>
+    <string name="voice_mic_blocked_title">Microphone access is off</string>
+    <string name="voice_mic_blocked_message">Parley needs Microphone access to hear your voice. Enable Microphone in Settings, then return here to record.</string>
+    <string name="voice_speech_unavailable_title">Speech recognition unavailable</string>
+    <string name="voice_speech_unavailable_message">Speech recognition isn\'t available on this device for %1$s. Check that a speech service such as Google is installed and enabled.</string>
+    <string name="voice_error_title">Couldn\'t capture audio</string>
+    <string name="voice_error_message">Something went wrong while starting voice input. Please try again.</string>
+    <string name="permission_mic">Mic: %1$s</string>
+    <string name="permission_speech">Speech: %1$s</string>
+    <string name="permission_allowed">Allowed</string>
+    <string name="permission_denied">Denied</string>
+    <string name="permission_blocked">Off in Settings</string>
+    <string name="permission_not_asked">Not asked</string>
+    <string name="speech_available">Available</string>
+    <string name="speech_unavailable">Unavailable</string>
+    <string name="error_speech_not_available">Speech recognition not available</string>
     <string name="unknown_error">Unknown error</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="settings_subtitle">Personalize your cozy space</string>
+    <string name="cd_back_to_translator">Back to translator</string>
+    <string name="word_traveler">Word Traveler</string>
+    <string name="hi_name_exclaim">Hi, %1$s!</string>
+    <string name="name_hint_caption">Your name appears on the home header</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="cd_clear_name">Clear name</string>
+    <string name="appearance">Appearance</string>
+    <string name="appearance_subtitle">Pick your favorite paper mood</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_light_subtitle">Warm Paper</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_subtitle">Espresso Ink</string>
+    <string name="cd_theme_option">%1$s theme</string>
+    <string name="about">About</string>
+    <string name="app_name_label">App Name</string>
+    <string name="version_label">Version</string>
+    <string name="version_value">v%1$s</string>
 </resources>

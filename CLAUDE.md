@@ -63,7 +63,11 @@ core/                 → UiLanguage (expect/actual), Language enum, Resource se
 
 **Resource pattern**: `sealed class Resource<T>` wraps async results as `Success(data)` or `Error(throwable)`.
 
-**Android DI**: Hilt via `di/AppModule.kt` wires `HttpClient → KtorTranslateClient`, `SqlDriver → SqlDelightHistoryDataSource`, and `TranslateUseCase`.
+**Android DI**: Hilt via `di/AppModule.kt` wires `HttpClient → KtorTranslateClient`, `SqlDriver → SqlDelightHistoryDataSource`, and `TranslateUseCase`. `settings/di/SettingsModule.kt` provides a DataStore-backed `SettingsRepository` (user name + Light/Dark theme).
+
+**Android UI ("Parley")**: Mirrors the iOS SwiftUI design. Tokens and building blocks live in `androidApp/.../core/designsystem/` (`CozyTheme` colors/spacing/motion/fonts, `cozyCard`, `cozyFloatingChrome`, `cozyClickable`, `cozyEntrance`, `CozyAmbientBackground`). When changing a screen on one platform, keep the other in sync. Fonts are bundled open fonts (Nunito, Source Serif 4; OFL licences in `assets/licenses`). Navigation uses type-safe routes in `core/presentation/Routes.kt`.
+
+**Android tests**: `./gradlew :androidApp:testDebugUnitTest` runs logic + Robolectric Compose UI tests on the JVM (sandbox pinned to SDK 35 in `src/test/resources/robolectric.properties`); `./gradlew :androidApp:connectedDebugAndroidTest` runs the Hilt E2E suites on a device/emulator with fakes from `androidTest/.../di/TestAppModule.kt`.
 
 ### Translation API
 
