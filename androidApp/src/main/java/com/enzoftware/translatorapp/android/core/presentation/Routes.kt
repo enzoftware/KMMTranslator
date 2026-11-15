@@ -1,7 +1,14 @@
 package com.enzoftware.translatorapp.android.core.presentation
 
-object Routes {
+import kotlinx.serialization.Serializable
 
-    const val TRANSLATE = "translate"
-    const val VOICE_TO_TEXT = "voice_to_text"
+sealed interface Route {
+    @Serializable
+    data object Translate : Route
+
+    @Serializable
+    data class VoiceToText(val languageCode: String) : Route
+
+    @Serializable
+    data object Settings : Route
 }

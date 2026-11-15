@@ -8,16 +8,23 @@
         <intent>
             <action android:name="android.speech.RecognitionService" />
         </intent>
+        <!-- Android 11+ package visibility: needed to bind to the text-to-speech engine. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
     </queries>
 
     <application
             android:name=".TranslateApp"
             android:allowBackup="false"
+            android:label="@string/app_name"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
                 android:name=".MainActivity"
-                android:exported="true">
+                android:exported="true"
+                android:theme="@style/AppTheme.Starting"
+                android:configChanges="uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

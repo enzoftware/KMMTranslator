@@ -3,16 +3,16 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
 		8777C9F6889E59EFFD631D80AEE9048B /* shared */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = B999BD58A146737F72CA68509B0BCE77 /* Build configuration list for PBXAggregateTarget "shared" */;
+			buildConfigurationList = 06B75B4C16AEBA870397ABAF7246CF0D /* Build configuration list for PBXAggregateTarget "shared" */;
 			buildPhases = (
-				11F372A9E68C08375C21A8D47B3CDB02 /* [CP-User] Build shared */,
-				35C7D8836447FEC746DA683E14000153 /* [CP] Copy dSYMs */,
+				D2A7AB8AB58C48FF9177EF9877F17AF2 /* [CP-User] Build shared */,
+				20C4B0DD9F9FB62F84D2605ACA26E2B7 /* [CP] Copy dSYMs */,
 			);
 			dependencies = (
 			);
@@ -217,7 +217,7 @@
 				LastUpgradeCheck = 1600;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
-			compatibilityVersion = "Xcode 12.0";
+			compatibilityVersion = "Xcode 16.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -248,17 +248,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		11F372A9E68C08375C21A8D47B3CDB02 /* [CP-User] Build shared */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			name = "[CP-User] Build shared";
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                  exit 0\n                fi\n                set -ev\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n";
-		};
-		35C7D8836447FEC746DA683E14000153 /* [CP] Copy dSYMs */ = {
+		20C4B0DD9F9FB62F84D2605ACA26E2B7 /* [CP] Copy dSYMs */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -274,6 +264,16 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/shared/shared-copy-dsyms.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		D2A7AB8AB58C48FF9177EF9877F17AF2 /* [CP-User] Build shared */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] Build shared";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "                if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n                    echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\"\"\n                    exit 0\n                fi\n                set -ev\n                REPO_ROOT=\"$PODS_TARGET_SRCROOT\"\n                \"$REPO_ROOT/../gradlew\" -p \"$REPO_ROOT\" $KOTLIN_PROJECT_PATH:syncFramework                     -Pkotlin.native.cocoapods.platform=$PLATFORM_NAME                     -Pkotlin.native.cocoapods.archs=\"$ARCHS\"                     -Pkotlin.native.cocoapods.configuration=\"$CONFIGURATION\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -298,7 +298,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0C5191A4781ECA5C592C1F73058AA4E7 /* Release */ = {
+		00CF94CE7578B3B7256EFFEB6F8A526E /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E23ED8A03974E9F66764D2E6B0853DA2 /* shared.release.xcconfig */;
 			buildSettings = {
@@ -458,7 +458,7 @@
 			};
 			name = Debug;
 		};
-		4ACDDF4766E7C9616D4ED0CC2851F0CA /* Debug */ = {
+		CBC944C0BC35F4031CF7BD415F7D8A5F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 009069A386B0A5A8DB76D61AE1586630 /* shared.debug.xcconfig */;
 			buildSettings = {
@@ -545,6 +545,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		06B75B4C16AEBA870397ABAF7246CF0D /* Build configuration list for PBXAggregateTarget "shared" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CBC944C0BC35F4031CF7BD415F7D8A5F /* Debug */,
+				00CF94CE7578B3B7256EFFEB6F8A526E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -559,15 +568,6 @@
 			buildConfigurations = (
 				379479C5C7ED72183188739D424C8CA2 /* Debug */,
 				17DEBEE6D7B67C9FD960184689FAB8A9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B999BD58A146737F72CA68509B0BCE77 /* Build configuration list for PBXAggregateTarget "shared" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4ACDDF4766E7C9616D4ED0CC2851F0CA /* Debug */,
-				0C5191A4781ECA5C592C1F73058AA4E7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
