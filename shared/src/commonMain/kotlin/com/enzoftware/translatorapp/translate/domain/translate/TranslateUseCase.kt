@@ -4,6 +4,7 @@ import com.enzoftware.translatorapp.core.domain.language.Language
 import com.enzoftware.translatorapp.core.util.Resource
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
 import com.enzoftware.translatorapp.translate.domain.history.HistoryItem
+import kotlinx.coroutines.CancellationException
 
 class TranslateUseCase(
     private val client: TranslateClient,
@@ -20,6 +21,22 @@ class TranslateUseCase(
                 fromText,
                 toLanguage
             )
+            saveToHistory(fromLanguage, fromText, toLanguage, translatedText)
+            Resource.Success(translatedText)
+        } catch (e: TranslateException) {
+            e.printStackTrace()
+            Resource.Error(e)
+        }
+    }
+
+    /** A history failure (e.g. a pending legacy import) must not hide a translation that succeeded. */
+    private suspend fun saveToHistory(
+        fromLanguage: Language,
+        fromText: String,
+        toLanguage: Language,
+        translatedText: String,
+    ) {
+        try {
             historyDataSource.insertHistoryItem(
                 HistoryItem(
                     id = null,
@@ -29,10 +46,10 @@ class TranslateUseCase(
                     toText = translatedText,
                 )
             )
-            Resource.Success(translatedText)
-        } catch (e: TranslateException) {
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
             e.printStackTrace()
-            Resource.Error(e)
         }
     }
 }
