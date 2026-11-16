@@ -1,5 +1,6 @@
 package com.enzoftware.translatorapp.translate.presentation
 
+import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -43,7 +44,7 @@ class TranslateViewModelTest {
     // --- state and history ---
 
     @Test
-    fun `state and history data are properly combined`() = runBlocking {
+    fun stateAndHistoryDataAreProperlyCombined() = runBlocking {
         viewModel.state.test {
             val initialState = awaitItem()
             assertThat(initialState).isEqualTo(TranslateState())
@@ -75,7 +76,7 @@ class TranslateViewModelTest {
     // --- translate ---
 
     @Test
-    fun `translate success - state properly updated`() = runBlocking {
+    fun translateSuccess_stateProperlyUpdated() = runBlocking {
         viewModel.state.test {
             awaitItem()
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("text"))
@@ -85,14 +86,15 @@ class TranslateViewModelTest {
             val loadingState = awaitItem()
             assertThat(loadingState.isTranslating).isTrue()
 
-            val resultState = awaitItem()
+            val resultState = awaitSettledTranslation()
             assertThat(resultState.isTranslating).isFalse()
             assertThat(resultState.toText).isEqualTo("test translation")
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun `translate with blank text - does not trigger translation`() = runBlocking {
+    fun translateWithBlankText_doesNotTriggerTranslation() = runBlocking {
         viewModel.state.test {
             awaitItem()
 
@@ -103,7 +105,7 @@ class TranslateViewModelTest {
     }
 
     @Test
-    fun `translate error - error is set in state and isTranslating becomes false`() = runBlocking {
+    fun translateError_errorIsSetInStateAndIsTranslatingBecomesFalse() = runBlocking {
         client.shouldReturnError = true
         client.translateError = TranslateError.SERVICE_UNAVAILABLE
 
@@ -125,7 +127,7 @@ class TranslateViewModelTest {
     // --- onChangeTranslationText ---
 
     @Test
-    fun `ChangeTranslationText - updates fromText in state`() = runBlocking {
+    fun changeTranslationText_updatesFromTextInState() = runBlocking {
         viewModel.state.test {
             awaitItem()
 
@@ -139,7 +141,7 @@ class TranslateViewModelTest {
     // --- onOpenFromLanguageDropDown / onOpenToLanguageDropDown ---
 
     @Test
-    fun `OpenFromLanguageDropDown - sets isChoosingFromLanguage to true`() = runBlocking {
+    fun openFromLanguageDropDown_setsIsChoosingFromLanguageToTrue() = runBlocking {
         viewModel.state.test {
             awaitItem()
 
@@ -151,7 +153,7 @@ class TranslateViewModelTest {
     }
 
     @Test
-    fun `OpenToLanguageDropDown - sets isChoosingToLanguage to true`() = runBlocking {
+    fun openToLanguageDropDown_setsIsChoosingToLanguageToTrue() = runBlocking {
         viewModel.state.test {
             awaitItem()
 
@@ -165,7 +167,7 @@ class TranslateViewModelTest {
     // --- onChooseFromLanguage / onChooseToLanguage ---
 
     @Test
-    fun `ChooseFromLanguage - updates fromLanguage and closes dropdown`() = runBlocking {
+    fun chooseFromLanguage_updatesFromLanguageAndClosesDropdown() = runBlocking {
         val german = UiLanguage.byCode("de")
 
         viewModel.state.test {
@@ -182,7 +184,7 @@ class TranslateViewModelTest {
     }
 
     @Test
-    fun `ChooseToLanguage - updates toLanguage and closes dropdown`() = runBlocking {
+    fun chooseToLanguage_updatesToLanguageAndClosesDropdown() = runBlocking {
         val french = UiLanguage.byCode("fr")
 
         viewModel.state.test {
@@ -201,7 +203,7 @@ class TranslateViewModelTest {
     // --- onStopChoosingLanguage ---
 
     @Test
-    fun `StopChoosingLanguage - closes both language dropdowns`() = runBlocking {
+    fun stopChoosingLanguage_closesBothLanguageDropdowns() = runBlocking {
         viewModel.state.test {
             awaitItem()
             viewModel.onEvent(TranslateEvent.OpenFromLanguageDropDown)
@@ -218,7 +220,7 @@ class TranslateViewModelTest {
     // --- onSwapLanguages ---
 
     @Test
-    fun `SwapLanguages - swaps fromLanguage and toLanguage`() = runBlocking {
+    fun swapLanguages_swapsFromLanguageAndToLanguage() = runBlocking {
         viewModel.state.test {
             val initialState = awaitItem()
             val originalFrom = initialState.fromLanguage
@@ -233,18 +235,13 @@ class TranslateViewModelTest {
     }
 
     @Test
-    fun `SwapLanguages after translation - also swaps fromText and toText`() = runBlocking {
+    fun swapLanguagesAfterTranslation_alsoSwapsFromTextAndToText() = runBlocking {
         viewModel.state.test {
             awaitItem()
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("hello"))
             awaitItem()
             viewModel.onEvent(TranslateEvent.Translate)
-            // The translation result and the history insert are two independent emissions
-            // whose order is not guaranteed, so wait until both have landed.
-            var settled = awaitItem()
-            while (settled.toText == null || settled.history.isEmpty()) {
-                settled = awaitItem()
-            }
+            val settled = awaitSettledTranslation()
             val originalFrom = settled.fromLanguage
 
             viewModel.onEvent(TranslateEvent.SwapLanguages)
@@ -262,14 +259,13 @@ class TranslateViewModelTest {
     // --- onCloseTranslation ---
 
     @Test
-    fun `CloseTranslation - resets fromText and toText and isTranslating`() = runBlocking {
+    fun closeTranslation_resetsFromTextAndToTextAndIsTranslating() = runBlocking {
         viewModel.state.test {
             awaitItem()
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("hello"))
             awaitItem()
             viewModel.onEvent(TranslateEvent.Translate)
-            awaitItem() // loading
-            awaitItem() // result
+            awaitSettledTranslation()
 
             viewModel.onEvent(TranslateEvent.CloseTranslation)
 
@@ -277,23 +273,20 @@ class TranslateViewModelTest {
             assertThat(state.fromText).isEqualTo("")
             assertThat(state.toText).isNull()
             assertThat(state.isTranslating).isFalse()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
     // --- onEditTranslation ---
 
     @Test
-    fun `EditTranslation with toText - clears toText and stops translating`() = runBlocking {
+    fun editTranslationWithToText_clearsToTextAndStopsTranslating() = runBlocking {
         viewModel.state.test {
             awaitItem()
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("hello"))
             awaitItem()
             viewModel.onEvent(TranslateEvent.Translate)
-            // Result and history insert are independent emissions; wait for both.
-            var settled = awaitItem()
-            while (settled.toText == null || settled.history.isEmpty()) {
-                settled = awaitItem()
-            }
+            val settled = awaitSettledTranslation()
 
             viewModel.onEvent(TranslateEvent.EditTranslation)
 
@@ -305,7 +298,7 @@ class TranslateViewModelTest {
     }
 
     @Test
-    fun `EditTranslation without toText - state remains unchanged`() = runBlocking {
+    fun editTranslationWithoutToText_stateRemainsUnchanged() = runBlocking {
         viewModel.state.test {
             awaitItem()
             assertThat(viewModel.state.value.toText).isNull()
@@ -319,7 +312,7 @@ class TranslateViewModelTest {
     // --- onSelectHistoryItem ---
 
     @Test
-    fun `SelectHistoryItem - restores state from the selected history item`() = runBlocking {
+    fun selectHistoryItem_restoresStateFromTheSelectedHistoryItem() = runBlocking {
         val historyItem = UiHistoryItem(
             id = 1L,
             fromText = "hello",
@@ -345,7 +338,7 @@ class TranslateViewModelTest {
     // --- onSubmitVoiceResult ---
 
     @Test
-    fun `SubmitVoiceResult with text - updates fromText and clears toText`() = runBlocking {
+    fun submitVoiceResultWithText_updatesFromTextAndClearsToText() = runBlocking {
         viewModel.state.test {
             awaitItem()
 
@@ -359,7 +352,7 @@ class TranslateViewModelTest {
     }
 
     @Test
-    fun `SubmitVoiceResult with null - state remains unchanged`() = runBlocking {
+    fun submitVoiceResultWithNull_stateRemainsUnchanged() = runBlocking {
         viewModel.state.test {
             awaitItem()
             viewModel.onEvent(TranslateEvent.ChangeTranslationText("existing text"))
@@ -374,7 +367,7 @@ class TranslateViewModelTest {
     // --- onError ---
 
     @Test
-    fun `OnError - clears error field in state`() = runBlocking {
+    fun onError_clearsErrorFieldInState() = runBlocking {
         client.shouldReturnError = true
         client.translateError = TranslateError.SERVER_ERROR
 
@@ -393,5 +386,17 @@ class TranslateViewModelTest {
             assertThat(clearedState.error).isNull()
             assertThat(clearedState.isTranslating).isFalse()
         }
+    }
+
+    /**
+     * A successful translation emits twice, once for the result and once for the history insert,
+     * in no guaranteed order. Waits until both have landed.
+     */
+    private suspend fun ReceiveTurbine<TranslateState>.awaitSettledTranslation(): TranslateState {
+        var state = awaitItem()
+        while (state.toText == null || state.history.isEmpty()) {
+            state = awaitItem()
+        }
+        return state
     }
 }

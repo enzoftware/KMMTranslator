@@ -1,8 +1,7 @@
 package com.enzoftware.translatorapp.di
 
-import com.enzoftware.translatorapp.TranslatorDatabase
-import com.enzoftware.translatorapp.translate.data.history.SqlDelightHistoryDataSource
-import com.enzoftware.translatorapp.translate.data.local.DatabaseDriverFactory
+import com.enzoftware.translatorapp.translate.data.local.TranslatorDatabaseFactory
+import com.enzoftware.translatorapp.translate.data.local.createHistoryDataSource
 import com.enzoftware.translatorapp.translate.data.remote.HttpClientFactory
 import com.enzoftware.translatorapp.translate.data.translate.KtorTranslateClient
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
@@ -12,11 +11,7 @@ import io.ktor.client.HttpClient
 
 class AppModule {
     val historyDataSource: HistoryDataSource by lazy {
-        SqlDelightHistoryDataSource(
-            TranslatorDatabase(
-                DatabaseDriverFactory().create()
-            )
-        )
+        TranslatorDatabaseFactory().createHistoryDataSource()
     }
 
     private val translateClient: TranslateClient by lazy {

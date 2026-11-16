@@ -29,7 +29,7 @@ Both apps share one design language: same palette, typography, layout, copy and 
 - **10-Language Bidirectional Translation**: Translate between English, Arabic, Azerbaijani, Chinese, French, German, Italian, Japanese, Korean, and Spanish with instant language swapping.
 - **Voice-to-Text Capture & Live Waveform**: Native speech recognition (`SFSpeechRecognizer` + `AVAudioEngine` on iOS; `SpeechRecognizer` on Android) paired with a real-time normalized microphone power meter, actionable missing-permission diagnostics (in-app microphone request or one-tap redirect to system Settings), and speech-service availability checks on Android.
 - **Text-to-Speech Playback**: Native `AVSpeechSynthesizer` (iOS) and Android `TextToSpeech` playback directly from translation output cards, automatically cancelling stale utterances when switching languages or clearing text.
-- **Persistent Translation History**: Local SQLite persistence powered by **SQLDelight** with reactive history streams and one-tap reload into the active editor.
+- **Persistent Translation History**: Local persistence powered by **Room** (Kotlin Multiplatform, bundled SQLite) with reactive `Flow` history streams and one-tap reload into the active editor. History saved by earlier SQLDelight-based versions is imported automatically on first launch.
 - **Profile & Appearance Settings**: A personal name for the home greeting plus a Light (Warm Paper) / Dark (Espresso Ink) theme, persisted with `UserDefaults` on iOS and Jetpack DataStore on Android.
 - **"Warm Paper & Indigo" Design System on both platforms**:
   - **iOS**: animated `MeshGradient` ambient backdrop (respecting `accessibilityReduceMotion`), staggered card entrances, haptic feedback, and iOS 26 Liquid Glass floating chrome with iOS 18 material fallbacks.
@@ -42,7 +42,7 @@ Both apps share one design language: same palette, typography, layout, copy and 
 Parley follows **Clean Architecture** paired with **Unidirectional Data Flow (UDF)**:
 
 1. **Domain Layer (`commonMain`)**: Pure Kotlin models (`Language`, `HistoryItem`, `TranslateError`), use cases (`TranslateUseCase`), and platform-agnostic contracts (`TranslateClient`, `HistoryDataSource`, `VoiceToTextParser`).
-2. **Data Layer (`commonMain` + `expect`/`actual`)**: `KtorTranslateClient` (HTTP client backed by platform engines `ktor-client-darwin` / `ktor-client-android`) and `SqlDelightHistoryDataSource` (backed by `NativeSqliteDriver` / `AndroidSqliteDriver`).
+2. **Data Layer (`commonMain` + `expect`/`actual`)**: `KtorTranslateClient` (HTTP client backed by platform engines `ktor-client-darwin` / `ktor-client-android`) and `RoomHistoryDataSource` (a Room 3 `TranslatorDatabase` on the bundled SQLite driver; only the database file location is platform-specific).
 3. **Shared Presentation Layer (`commonMain` + `iosMain`)**: `TranslateViewModel` and `VoiceToTextViewModel` consume sealed `TranslateEvent` / `VoiceToTextEvent` actions and expose reactive state via `CommonStateFlow<T>`. On iOS, `IOSMutableStateFlow` + `DisposableHandle` bridge Kotlin coroutines safely onto Swift `@MainActor` `ObservableObject` wrappers (`IOSTranslateViewModel`, `IOSVoiceToTextViewModel`).
 4. **Native Platform UI**:
    - **iOS**: SwiftUI screens (`TranslateScreen`, `VoiceToTextScreen`, `SettingsScreen`) powered by a zero-KMM-dependency `design_system` module and manual `AppModule` composition root exported from `shared`.
@@ -61,7 +61,7 @@ flowchart LR
         sVM["TranslateViewModel & VoiceToTextViewModel\n(CommonStateFlow + Events)"]
         sUC["TranslateUseCase"]
         sNet["KtorTranslateClient (HTTP / JSON)"]
-        sDB["SqlDelightHistoryDataSource (SQLite)"]
+        sDB["RoomHistoryDataSource (Room · SQLite)"]
     end
 
     subgraph Android ["androidApp (Jetpack Compose)"]
@@ -96,7 +96,7 @@ flowchart LR
 | :--- | :--- | :--- |
 | **Multiplatform Core** | Kotlin Multiplatform Mobile (KMM) | Kotlin `2.4.21`, Gradle `9.9.1`, CocoaPods integration |
 | **Networking** | Ktor Client (`core`, `content-negotiation`, `kotlinx-json`, `darwin`, `android`) | `3.6.1` |
-| **Local Persistence** | SQLDelight (`runtime`, `coroutines-extensions`, `native-driver`, `android-driver`) | `2.4.1` (`translate.sq`) |
+| **Local Persistence** | Room KMP (`room3-runtime`, KSP `room3-compiler`) + `androidx.sqlite:sqlite-bundled` | Room `3.0.3`, schema exported to `shared/schemas/` |
 | **Async & Dates** | Kotlinx Coroutines, Kotlinx DateTime | Coroutines `1.11.0`, `kotlinx-datetime 0.8.0` |
 | **iOS UI & Audio** | SwiftUI, Observation/Combine, `AVFoundation`, `Speech` | iOS `18.0+` (`#available(iOS 26.0, *)` Liquid Glass) |
 | **iOS Testing** | Swift Testing (`@Suite`, `@Test`) | 66 unit & snapshot/render tests (`iosAppTests`) |
@@ -114,12 +114,13 @@ KMMTranslator/
 │   └── src/
 │       ├── commonMain/
 │       │   ├── kotlin/.../core/           # Language enum, UiLanguage, Resource, CommonFlow helpers
-│       │   ├── kotlin/.../translate/      # Domain contracts, Ktor client, SQLDelight history, TranslateViewModel
+│       │   ├── kotlin/.../translate/      # Domain contracts, Ktor client, Room history + legacy import, TranslateViewModel
 │       │   ├── kotlin/.../voice_to_text/  # VoiceToTextParser contract, VoiceToTextState/Event/ViewModel
-│       │   └── sqldelight/database/       # translate.sq schema & queries
-│       ├── androidMain/                   # AndroidSqliteDriver, Android engine, UiLanguage actuals + flag drawables
-│       ├── iosMain/                       # NativeSqliteDriver, Darwin engine, AppModule, IOSMutableStateFlow
-│       └── commonTest/                    # TranslateViewModelTest with Turbine & fakes
+│       ├── androidMain/                   # Room database location, Android engine, UiLanguage actuals + flag drawables
+│       ├── iosMain/                       # Room database location, Darwin engine, AppModule, IOSMutableStateFlow
+│       ├── commonTest/                    # ViewModel + data source tests, HistoryDatabaseContract (real Room)
+│       ├── iosTest/ · androidDeviceTest/  # run HistoryDatabaseContract on the iOS simulator / an Android device
+│       └── ../schemas/                    # Room schema JSON (commit changes alongside migrations)
 ├── iosApp/
 │   ├── iosApp/
 │   │   ├── core/presentation/design_system/  # CozyTheme, CozyAmbientBackground, CozyCard, CozyFloatingChrome, etc.
@@ -159,6 +160,7 @@ KMMTranslator/
 # Shared module tests (JVM and iOS simulator)
 ./gradlew :shared:testAndroidHostTest
 ./gradlew :shared:iosSimulatorArm64Test
+./gradlew :shared:connectedAndroidDeviceTest   # shared suite incl. real Room tests, on an emulator/device
 
 # Android JVM tests: logic + Robolectric Compose screen tests
 ./gradlew :androidApp:testDebugUnitTest

@@ -1,10 +1,8 @@
 package com.enzoftware.translatorapp.android.di
 
 import android.app.Application
-import app.cash.sqldelight.db.SqlDriver
-import com.enzoftware.translatorapp.TranslatorDatabase
-import com.enzoftware.translatorapp.translate.data.history.SqlDelightHistoryDataSource
-import com.enzoftware.translatorapp.translate.data.local.DatabaseDriverFactory
+import com.enzoftware.translatorapp.translate.data.local.TranslatorDatabaseFactory
+import com.enzoftware.translatorapp.translate.data.local.createHistoryDataSource
 import com.enzoftware.translatorapp.translate.data.remote.HttpClientFactory
 import com.enzoftware.translatorapp.translate.data.translate.KtorTranslateClient
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
@@ -31,12 +29,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabaseDriverFactory(app: Application): SqlDriver = DatabaseDriverFactory(app).create()
-
-    @Provides
-    @Singleton
-    fun provideHistoryDataSource(sqlDriver: SqlDriver): HistoryDataSource =
-        SqlDelightHistoryDataSource(db = TranslatorDatabase.invoke(sqlDriver))
+    fun provideHistoryDataSource(app: Application): HistoryDataSource =
+        TranslatorDatabaseFactory(app).createHistoryDataSource()
 
     @Provides
     @Singleton

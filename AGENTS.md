@@ -7,7 +7,7 @@ Guidance for any coding agent working in this repository. `CLAUDE.md` and `GEMIN
 **Parley** is a Kotlin Multiplatform translator. Business logic lives once in `shared/`; each app ships a native UI:
 
 - `shared/` holds domain, data and presentation logic.
-  - `commonMain`: domain contracts, Ktor client, SQLDelight history, `TranslateViewModel` and `VoiceToTextViewModel`.
+  - `commonMain`: domain contracts, Ktor client, Room history (`translate/data/local`), `TranslateViewModel` and `VoiceToTextViewModel`.
   - `androidMain` and `iosMain`: the `actual`s (`UiLanguage`, `DatabaseDriverFactory`, `HttpClientFactory`).
 - `androidApp/`: Jetpack Compose + Hilt.
 - `iosApp/`: SwiftUI, consuming `shared` through CocoaPods.
@@ -20,6 +20,7 @@ Put logic in `shared` whenever it is not platform UI or a platform API.
 ./gradlew :androidApp:assembleDebug              # Android debug APK
 ./gradlew :shared:testAndroidHostTest            # shared tests on the JVM
 ./gradlew :shared:iosSimulatorArm64Test          # shared tests on the iOS simulator
+./gradlew :shared:connectedAndroidDeviceTest     # shared tests on an Android device (incl. real Room)
 ./gradlew :androidApp:testDebugUnitTest          # Android logic + Robolectric Compose screen tests
 ./gradlew :androidApp:connectedDebugAndroidTest  # Android Hilt E2E suites (needs an emulator/device)
 ./rebuild_ios_framework.sh                       # after changing shared Kotlin, before building iOS
@@ -37,9 +38,16 @@ Versions are in `gradle/libs.versions.toml`.
   - Android wraps them in Hilt `ViewModel`s (`AndroidTranslateViewModel`, `AndroidVoiceToTextViewModel`).
 - **Async state:** the shared state is `combine(...).stateIn(...)`, so it reaches the UI asynchronously. Never bind a text field straight to it: the Android editor goes through `EditorTextSync`, which ignores late echoes of the user's own keystrokes. Otherwise fast typing gets scrambled.
 - **Android DI:**
-  - `di/AppModule.kt` wires the HTTP client, SQLDelight and `TranslateUseCase`.
+  - `di/AppModule.kt` wires the HTTP client, the Room history source and `TranslateUseCase`.
   - `voice_to_text/di/VoiceToTextModule.kt` provides the speech parser.
   - `settings/di/SettingsModule.kt` provides the DataStore `SettingsRepository`, holding the user name and Light/Dark theme. Its keys match iOS `SettingsStore`.
+- **Persistence (Room 3 KMP):**
+  - `TranslatorDatabase` (`parley.db`) lives in `commonMain`. Only the file location is platform code (`TranslatorDatabaseFactory`): Android uses `getDatabasePath`, iOS uses `<Application Support>/databases`.
+  - Use the bundled SQLite driver (`buildTranslatorDatabase()`) on every platform, so behaviour and SQLite version match.
+  - DAO functions are `suspend` or return `Flow` (Room 3 requires it).
+  - Schema changes: bump `version`, add a `Migration`, and commit the regenerated JSON in `shared/schemas/`.
+  - `LegacyHistoryImporter` copies history from the pre-Room SQLDelight `translator.db` once, then deletes it. Keep it until no supported install can still have that file.
+  - No `iosX64`: Room 3 and `sqlite-bundled` don't ship Intel-simulator binaries.
 - **Backend:** `KtorTranslateClient` posts JSON to `https://translate.pl-coding.com/translate`. The service is sometimes unavailable; the UI shows an error banner.
 
 ## UI parity
@@ -64,8 +72,10 @@ Both apps implement one design language, "Warm Paper & Indigo". Any UI change is
 
 ## Testing
 
-- **Shared:** `commonTest` runs on the JVM and on Kotlin/Native.
-  - Backticked test names must not contain commas or other characters illegal on Native.
+- **Shared:** `commonTest` runs on the JVM, the iOS simulator and Android devices (`androidDeviceTest` joins the `test` source-set tree).
+  - Name tests as plain identifiers (`subject_expectation`). Backticked names with spaces break Android dexing below API 30, and commas break Kotlin/Native.
+  - `HistoryDatabaseContract` holds the real-Room tests. Its subclasses live in `iosTest` and `androidDeviceTest`. The Android host JVM can't load the Android build of the bundled driver.
+  - Never call `dependsOn` by hand in `shared/build.gradle.kts`: it switches off Kotlin's default hierarchy, and the iOS source sets lose their `actual`s.
   - A successful translation emits twice (the result, then the history insert) in no guaranteed order. Wait for the settled state rather than counting `awaitItem()`s.
 - **Android JVM tests** (`src/test`): Robolectric is pinned to SDK 35 in `src/test/resources/robolectric.properties`, because the SDK 36 sandbox needs JDK 21. Screen tests use `@Config(qualifiers = "w411dp-h1600dp-xxhdpi")` so lazy and below-the-fold content is composed.
 - **Android E2E** (`src/androidTest`): `@UninstallModules(AppModule, VoiceToTextModule, SettingsModule)`, with fakes provided by `di/TestAppModule.kt`. Look nodes up by the `*TestTags` objects or content descriptions, because history stays visible next to a result and the same text appears twice.
