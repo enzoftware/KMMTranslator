@@ -111,7 +111,7 @@
     <string name="cd_remove_saved_word">Delete %1$s</string>
     <string name="my_words_empty_title">No saved words yet</string>
     <string name="my_words_empty_message">Tap the bookmark on any suggestion to keep it here. Swipe a word away to remove it.</string>
-    <string name="tap_to_use">Tap to open in the translator</string>
+    <string name="tap_to_use">Opens in the translator</string>
 
     <!-- Settings -->
     <string name="settings">Settings</string>

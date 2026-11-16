@@ -28,6 +28,11 @@ final class IOSPhrasebookViewModel: ObservableObject {
         )
     }
 
+    deinit {
+        // The shared view model owns its coroutine scope on iOS; cancel it with this wrapper.
+        viewModel.dispose()
+    }
+
     func onEvent(_ event: PhrasebookEvent) {
         viewModel.onEvent(event: event)
     }

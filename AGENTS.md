@@ -54,7 +54,7 @@ Versions are in `gradle/libs.versions.toml`.
   - Tables: `historyEntity` (v1) and `savedWordEntity` (v2, "My Words", added by an `AutoMigration`). Both data sources share one database through `TranslatorStorage`.
 - **Phrasebook:**
   - The built-in phrases live in `phrasebook/domain/Phrasebook.kt`. Every entry needs a translation for every `Language`; `PhrasebookTest` fails otherwise.
-  - Entry `key`s are persisted in saved words, so never rename a key that has shipped.
+  - Entry `key`s are persisted in saved words, so never rename or delete a key that has shipped. A saved word whose key is gone can't be opened in the translator.
   - `TranslateEvent.ShowPhrasebookEntry` shows a phrase offline and adds no history.
 - **Backend:** `KtorTranslateClient` posts JSON to `https://translate.pl-coding.com/translate`. The service is sometimes unavailable; the UI shows an error banner.
 

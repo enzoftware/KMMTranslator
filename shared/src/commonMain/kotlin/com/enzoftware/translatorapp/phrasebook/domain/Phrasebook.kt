@@ -57,7 +57,7 @@ object Phrasebook {
         ),
         entry(
             "goodbye", PhrasebookCategory.GREETINGS,
-            ENGLISH to "Goodbye", ARABIC to "مع السلامة", AZERBAIJANI to "Sağ olun", CHINESE to "再见",
+            ENGLISH to "Goodbye", ARABIC to "مع السلامة", AZERBAIJANI to "Görüşənədək", CHINESE to "再见",
             FRENCH to "Au revoir", GERMAN to "Auf Wiedersehen", ITALIAN to "Arrivederci", JAPANESE to "さようなら",
             KOREAN to "안녕히 계세요", SPANISH to "Adiós",
         ),
@@ -99,7 +99,7 @@ object Phrasebook {
         ),
         entry(
             "no", PhrasebookCategory.COURTESY,
-            ENGLISH to "No", ARABIC to "لا", AZERBAIJANI to "Xeyr", CHINESE to "不",
+            ENGLISH to "No", ARABIC to "لا", AZERBAIJANI to "Xeyr", CHINESE to "不是",
             FRENCH to "Non", GERMAN to "Nein", ITALIAN to "No", JAPANESE to "いいえ",
             KOREAN to "아니요", SPANISH to "No",
         ),

@@ -72,14 +72,14 @@ class PhrasebookScreenTest {
     }
 
     @Test
-    fun bookmark_togglesTheEntry_andTappingAPhraseUsesIt() {
+    fun bookmark_togglesTheEntry_andTappingAPhraseUsesItInTheShownPair() {
         setScreen(PhrasebookState(toLanguage = german, suggestions = suggestions))
 
         composeRule.onNodeWithContentDescription(str(R.string.cd_save_word, "Water")).performClick()
         composeRule.onNodeWithTag(PhrasebookTestTags.phrase("water")).performClick()
 
         assertThat(events).containsExactly(PhrasebookEvent.ToggleSaved("water"))
-        assertThat(used).containsExactly(Triple("water", null, null))
+        assertThat(used).containsExactly(Triple("water", "en", "de"))
     }
 
     @Test

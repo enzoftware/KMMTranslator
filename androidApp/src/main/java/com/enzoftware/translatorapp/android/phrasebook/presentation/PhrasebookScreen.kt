@@ -123,7 +123,10 @@ fun PhrasebookScreen(
                 PhrasebookTab.SUGGESTED -> SuggestedList(
                     state = state,
                     onEvent = onEvent,
-                    onUse = { onUsePhrase(it, null, null) },
+                    onUse = {
+                        // Pass the pair shown here: the translator's in-memory pair may not survive process death.
+                        onUsePhrase(it, state.fromLanguage.language.code, state.toLanguage.language.code)
+                    },
                     bottomPadding = navBars.calculateBottomPadding(),
                 )
 
@@ -332,6 +335,8 @@ private fun MyWordsList(
             }
             SwipeToDismissBox(
                 state = dismissState,
+                // Trailing edge only, like iOS; the delete affordance sits at the end.
+                enableDismissFromStartToEnd = false,
                 backgroundContent = { RemoveBackground() },
                 modifier = Modifier.animateItem(),
             ) {

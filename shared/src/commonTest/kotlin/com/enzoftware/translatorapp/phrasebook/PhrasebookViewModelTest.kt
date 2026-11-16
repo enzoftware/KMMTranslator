@@ -17,6 +17,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.runBlocking
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -87,6 +89,18 @@ class PhrasebookViewModelTest {
             assertThat(removed.suggestions.first { it.entryKey == "thank_you" }.isSaved).isFalse()
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    @Test
+    fun aFastDoubleToggleSavesThenRemoves() = runBlocking {
+        viewModel.onEvent(PhrasebookEvent.SetLanguages(english, german))
+
+        // Both taps land before any state re-emits; each must see the other's write.
+        viewModel.onEvent(PhrasebookEvent.ToggleSaved("water"))
+        viewModel.onEvent(PhrasebookEvent.ToggleSaved("water"))
+
+        withTimeout(5_000) { while (dataSource.writes < 2) delay(10) }
+        assertThat(dataSource.words.value).isEmpty()
     }
 
     @Test

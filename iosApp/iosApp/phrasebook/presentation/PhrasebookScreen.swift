@@ -198,7 +198,11 @@ struct PhrasebookScreen: View {
     private func phraseCard(_ phrase: UiPhrase) -> some View {
         HStack(spacing: 8) {
             Button {
-                onUsePhrase(phrase.entryKey, nil, nil)
+                onUsePhrase(
+                    phrase.entryKey,
+                    viewModel.state.fromLanguage.language.code,
+                    viewModel.state.toLanguage.language.code
+                )
                 dismiss()
             } label: {
                 VStack(alignment: .leading, spacing: 3) {
@@ -228,6 +232,8 @@ struct PhrasebookScreen: View {
                     .background(
                         Circle().fill(phrase.isSaved ? CozyTheme.Colors.indigoSoft : CozyTheme.Colors.paperMuted.opacity(0.6))
                     )
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(CozyScaleButtonStyle(pressedScale: 0.9))
             .sensoryFeedback(.selection, trigger: phrase.isSaved)
@@ -326,6 +332,8 @@ struct PhrasebookScreen: View {
                     .foregroundStyle(CozyTheme.Colors.inkSecondary)
                     .frame(width: 30, height: 30)
                     .background(Circle().fill(CozyTheme.Colors.paperMuted.opacity(0.85)))
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(CozyScaleButtonStyle())
             .accessibilityLabel("Delete \(word.fromText)")
