@@ -16,11 +16,19 @@ Both apps share one design language: same palette, typography, layout, copy and 
 | :---: | :---: | :---: | :---: |
 | <img src="docs/screenshots/ios/01_home_translate.png" width="210" alt="Parley iOS home screen" /> | <img src="docs/screenshots/ios/02_translator_card_states.png" width="210" alt="Parley iOS translator card states" /> | <img src="docs/screenshots/ios/03_voice_to_text.png" width="210" alt="Parley iOS voice to text screen" /> | <img src="docs/screenshots/ios/04_settings.png" width="210" alt="Parley iOS settings screen" /> |
 
+| Offline Phrasebook | My Words |
+| :---: | :---: |
+| <img src="docs/screenshots/ios/05_phrasebook.png" width="210" alt="Parley iOS phrasebook with saved phrases bookmarked" /> | <img src="docs/screenshots/ios/06_my_words.png" width="210" alt="Parley iOS My Words list" /> |
+
 ### Android · Jetpack Compose
 
 | Home & Quick Phrases | Translator Card States | Voice-to-Text & Diagnostics | Profile & Appearance Settings |
 | :---: | :---: | :---: | :---: |
 | <img src="docs/screenshots/android/01_home_translate.png" width="210" alt="Parley Android home screen" /> | <img src="docs/screenshots/android/02_translator_card_states.png" width="210" alt="Parley Android translator card states" /> | <img src="docs/screenshots/android/03_voice_to_text.png" width="210" alt="Parley Android voice to text screen" /> | <img src="docs/screenshots/android/04_settings.png" width="210" alt="Parley Android settings screen" /> |
+
+| Offline Phrasebook | My Words |
+| :---: | :---: |
+| <img src="docs/screenshots/android/05_phrasebook.png" width="210" alt="Parley Android phrasebook with saved phrases bookmarked" /> | <img src="docs/screenshots/android/06_my_words.png" width="210" alt="Parley Android My Words list" /> |
 
 ---
 
