@@ -7,6 +7,7 @@ import com.enzoftware.translatorapp.translate.data.local.HistoryEntity
 import com.enzoftware.translatorapp.translate.data.local.LegacyHistoryImport
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
 import com.enzoftware.translatorapp.translate.domain.history.HistoryItem
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -30,7 +31,10 @@ class RoomHistoryDataSource(
      */
     override fun getHistory(coroutineContext: CoroutineContext): CommonFlow<List<HistoryItem>> =
         flow {
-            importLegacyHistoryOnce()
+            // Reading is safe even if the import failed, so history still shows; the import is
+            // retried before the next read or write.
+            runCatching { importLegacyHistoryOnce() }
+                .onFailure { if (it is CancellationException) throw it }
             emitAll(dao.observeHistory())
         }
             .map { rows -> rows.map { it.toHistoryItem() } }
@@ -50,14 +54,18 @@ class RoomHistoryDataSource(
         )
     }
 
-    /** Runs the SQLDelight → Room import before the first read or write, at most once. */
+    /**
+     * Runs the SQLDelight → Room import before the first read or write, until it succeeds once.
+     *
+     * A failure propagates and leaves [importDone] unset, so writes stay blocked until the import
+     * succeeds. Letting a write through first could hand a new row an id that a legacy row still
+     * owns; the retried import (REPLACE) would then overwrite the user's newer translation.
+     */
     private suspend fun importLegacyHistoryOnce() {
         if (importDone) return
         importLock.withLock {
             if (importDone) return
-            // A failed import keeps the old file, so it is retried on the next launch instead of
-            // blocking history for this session.
-            runCatching { legacyImporter?.importIfPresent() }
+            legacyImporter?.importIfPresent()
             importDone = true
         }
     }

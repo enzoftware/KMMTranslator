@@ -1,6 +1,9 @@
 package com.enzoftware.translatorapp.translate.data.local
 
 import androidx.sqlite.SQLiteDriver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 
 /** The SQLDelight database file used before the Room migration (`translator.db`). */
 interface LegacyDatabaseFile {
@@ -31,11 +34,13 @@ class LegacyHistoryImporter(
     private val legacyFile: LegacyDatabaseFile,
     private val dao: HistoryDao,
 ) : LegacyHistoryImport {
+    // The legacy file is read through the raw driver, outside Room's query context, so the file
+    // and database work is moved off the caller's (possibly main) dispatcher.
     override suspend fun importIfPresent() {
-        if (!legacyFile.exists()) return
-        val rows = readLegacyRows()
+        if (!withContext(Dispatchers.IO) { legacyFile.exists() }) return
+        val rows = withContext(Dispatchers.IO) { readLegacyRows() }
         if (rows.isNotEmpty()) dao.upsertAll(rows)
-        legacyFile.delete()
+        withContext(Dispatchers.IO) { legacyFile.delete() }
     }
 
     private fun readLegacyRows(): List<HistoryEntity> = driver.open(legacyFile.path).use { connection ->

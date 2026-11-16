@@ -3,6 +3,7 @@ package com.enzoftware.translatorapp.translate.data.history
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.doesNotContain
 import assertk.assertions.isEqualTo
 import com.enzoftware.translatorapp.translate.data.local.HistoryDao
 import com.enzoftware.translatorapp.translate.data.local.HistoryEntity
@@ -82,10 +83,31 @@ class RoomHistoryDataSourceTest {
     }
 
     @Test
-    fun aFailingImportDoesNotBlockHistory() = runTest {
-        val source = dataSource { error("corrupt legacy file") }
+    fun aFailingImportBlocksWritesUntilItSucceeds() = runTest {
+        var failImport = true
+        var imports = 0
+        val source = dataSource {
+            imports++
+            if (failImport) error("legacy file unreadable")
+        }
 
+        val failure = runCatching { source.insertHistoryItem(item("Hello", "Hola")) }
+
+        assertThat(failure.exceptionOrNull()?.message).isEqualTo("legacy file unreadable")
+        assertThat(events).doesNotContain("write")
+
+        failImport = false
         source.insertHistoryItem(item("Hello", "Hola"))
+        source.insertHistoryItem(item("Thanks", "Gracias"))
+
+        assertThat(imports).isEqualTo(2)
+        assertThat(dao.rows.value.map { it.toText }).containsExactly("Hola", "Gracias")
+    }
+
+    @Test
+    fun aFailingImportStillShowsStoredHistory() = runTest {
+        dao.rows.value = listOf(HistoryEntity(7, "en", "Hello", "es", "Hola", 1_000L))
+        val source = dataSource { error("legacy file unreadable") }
 
         source.getHistory(EmptyCoroutineContext).test {
             assertThat(awaitItem().map { it.toText }).containsExactly("Hola")
