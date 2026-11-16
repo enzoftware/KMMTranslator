@@ -15,8 +15,11 @@ class AndroidHistoryDatabaseTest : HistoryDatabaseContract() {
     override fun inMemoryDatabaseBuilder(): RoomDatabase.Builder<TranslatorDatabase> =
         Room.inMemoryDatabaseBuilder<TranslatorDatabase>(context)
 
-    override fun scratchLegacyFile(): LegacyDatabaseFile = object : LegacyDatabaseFile {
-        private val file = File(context.cacheDir, "legacy-translator-test.db")
+    override fun fileDatabaseBuilder(path: String): RoomDatabase.Builder<TranslatorDatabase> =
+        Room.databaseBuilder<TranslatorDatabase>(context, path)
+
+    override fun scratchFile(name: String): LegacyDatabaseFile = object : LegacyDatabaseFile {
+        private val file = File(context.cacheDir, name)
         override val path: String = file.absolutePath
         override fun exists() = file.exists()
         override fun delete() {

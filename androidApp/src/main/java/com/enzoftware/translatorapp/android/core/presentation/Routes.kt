@@ -11,4 +11,7 @@ sealed interface Route {
 
     @Serializable
     data object Settings : Route
+
+    @Serializable
+    data class Phrasebook(val fromLanguageCode: String, val toLanguageCode: String) : Route
 }

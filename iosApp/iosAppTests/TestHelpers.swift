@@ -290,3 +290,28 @@ func waitUntil(
     }
     return true
 }
+
+final class FakeSavedWordsDataSource: SavedWordsDataSource {
+    private let wordsFlow = IOSMutableStateFlow<NSArray>(initialValue: [] as NSArray)
+
+    var words: [SavedWord] { (wordsFlow.value as? [SavedWord]) ?? [] }
+
+    func observeSavedWords() -> CommonFlow<NSArray> {
+        wordsFlow
+    }
+
+    func save(word: SavedWord) async throws {
+        let others = words.filter { !$0.matches(word.entryKey, word.fromLanguageCode, word.toLanguageCode) }
+        wordsFlow.value = ([word] + others) as NSArray
+    }
+
+    func remove(entryKey: String, fromLanguageCode: String, toLanguageCode: String) async throws {
+        wordsFlow.value = words.filter { !$0.matches(entryKey, fromLanguageCode, toLanguageCode) } as NSArray
+    }
+}
+
+private extension SavedWord {
+    func matches(_ key: String, _ from: String, _ to: String) -> Bool {
+        entryKey == key && fromLanguageCode == from && toLanguageCode == to
+    }
+}

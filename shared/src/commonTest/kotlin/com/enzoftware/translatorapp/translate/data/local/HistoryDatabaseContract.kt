@@ -27,8 +27,11 @@ abstract class HistoryDatabaseContract {
     /** A fresh in-memory database builder for each test. */
     abstract fun inMemoryDatabaseBuilder(): RoomDatabase.Builder<TranslatorDatabase>
 
-    /** A legacy-database handle pointing at a scratch file that does not exist yet. */
-    abstract fun scratchLegacyFile(): LegacyDatabaseFile
+    /** A file-backed database builder, for tests that need a real file (migrations). */
+    abstract fun fileDatabaseBuilder(path: String): RoomDatabase.Builder<TranslatorDatabase>
+
+    /** A handle to a scratch file (may already exist from an earlier run; tests delete it first). */
+    abstract fun scratchFile(name: String): LegacyDatabaseFile
 
     private lateinit var database: TranslatorDatabase
     private lateinit var legacyFile: LegacyDatabaseFile
@@ -36,7 +39,7 @@ abstract class HistoryDatabaseContract {
     @BeforeTest
     fun openDatabase() {
         database = inMemoryDatabaseBuilder().buildTranslatorDatabase()
-        legacyFile = scratchLegacyFile()
+        legacyFile = scratchFile("legacy-translator-test.db")
         legacyFile.delete()
     }
 
@@ -131,6 +134,61 @@ abstract class HistoryDatabaseContract {
         dao.observeHistory().test {
             assertThat(awaitItem()).containsExactly(thanks, hello)
             cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun savedWordsAreStoredPerPairNewestFirstAndRemovable() = runTest {
+        val words = database.savedWordDao()
+        words.upsert(SavedWordEntity("hello", "en", "Hello", "es", "Hola", savedAt = 1))
+        words.upsert(SavedWordEntity("hello", "en", "Hello", "de", "Hallo", savedAt = 2))
+        words.upsert(SavedWordEntity("water", "en", "Water", "es", "Agua", savedAt = 3))
+        words.upsert(SavedWordEntity("hello", "en", "Hello", "es", "Hola", savedAt = 4)) // re-save refreshes
+
+        words.observeAll().test {
+            assertThat(awaitItem().map { "${it.entryKey}:${it.toLanguageCode}" })
+                .containsExactly("hello:es", "water:es", "hello:de")
+
+            words.delete("hello", "en", "es")
+            assertThat(awaitItem().map { "${it.entryKey}:${it.toLanguageCode}" })
+                .containsExactly("water:es", "hello:de")
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun aVersion1DatabaseAutoMigratesToVersion2AndKeepsHistory() = runTest {
+        val file = scratchFile("migration-test.db")
+        file.delete()
+        // Exactly what Room wrote for schema version 1 (shared/schemas/.../1.json).
+        BundledSQLiteDriver().open(file.path).use { connection ->
+            connection.execSQL(
+                "CREATE TABLE IF NOT EXISTS `historyEntity` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`fromLanguageCode` TEXT NOT NULL, `fromText` TEXT NOT NULL, `toLanguage` TEXT NOT NULL, " +
+                    "`toText` TEXT NOT NULL, `timestamp` INTEGER NOT NULL)",
+            )
+            connection.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)")
+            connection.execSQL(
+                "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7caeab70df088176a4808f258e622bda')",
+            )
+            connection.execSQL("INSERT INTO historyEntity VALUES (1, 'en', 'Hello', 'es', 'Hola', 1000)")
+            connection.execSQL("PRAGMA user_version = 1")
+        }
+
+        val migrated = fileDatabaseBuilder(file.path).buildTranslatorDatabase()
+        try {
+            migrated.historyDao().observeHistory().test {
+                assertThat(awaitItem()).containsExactly(hello)
+                cancelAndIgnoreRemainingEvents()
+            }
+            migrated.savedWordDao().upsert(SavedWordEntity("water", "en", "Water", "es", "Agua", savedAt = 1))
+            migrated.savedWordDao().observeAll().test {
+                assertThat(awaitItem().map { it.entryKey }).containsExactly("water")
+                cancelAndIgnoreRemainingEvents()
+            }
+        } finally {
+            migrated.close()
+            file.delete()
         }
     }
 

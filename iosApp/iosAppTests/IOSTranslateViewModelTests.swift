@@ -287,4 +287,21 @@ struct IOSTranslateViewModelTests {
         }
         #expect(updated)
     }
+
+    @Test func showPhrasebookEntryShowsTheOfflineTranslationInItsPair() async {
+        let (viewModel, client, historyDataSource) = makeSUT()
+        viewModel.startObserving()
+        defer { viewModel.dispose() }
+
+        viewModel.onEvent(
+            event: TranslateEvent.ShowPhrasebookEntry(entryKey: "thank_you", fromLanguageCode: "fr", toLanguageCode: "ja")
+        )
+
+        let shown = await waitUntil { viewModel.state.toText == "ありがとうございます" }
+        #expect(shown)
+        #expect(viewModel.state.fromText == "Merci")
+        #expect(viewModel.state.fromLanguage.language == .french)
+        #expect(client.calls.isEmpty)
+        #expect(historyDataSource.insertedItems.isEmpty)
+    }
 }

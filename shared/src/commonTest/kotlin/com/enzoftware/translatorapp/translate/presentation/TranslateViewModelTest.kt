@@ -388,6 +388,44 @@ class TranslateViewModelTest {
         }
     }
 
+    // --- phrasebook ---
+
+    @Test
+    fun showPhrasebookEntry_showsTheBuiltInTranslationOfflineWithoutHistory() = runBlocking {
+        viewModel.state.test {
+            awaitItem()
+            viewModel.onEvent(TranslateEvent.ShowPhrasebookEntry("good_morning"))
+
+            val state = awaitItem()
+            assertThat(state.fromText).isEqualTo("Good morning")
+            assertThat(state.toText).isEqualTo("Buenos días")
+            assertThat(state.isTranslating).isFalse()
+            assertThat(state.history.isEmpty()).isTrue()
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun showPhrasebookEntry_withASavedPair_switchesToThatPair() = runBlocking {
+        viewModel.state.test {
+            awaitItem()
+            viewModel.onEvent(TranslateEvent.ShowPhrasebookEntry("thank_you", "fr", "ja"))
+
+            val state = awaitItem()
+            assertThat(state.fromLanguage).isEqualTo(UiLanguage.byCode("fr"))
+            assertThat(state.toLanguage).isEqualTo(UiLanguage.byCode("ja"))
+            assertThat(state.fromText).isEqualTo("Merci")
+            assertThat(state.toText).isEqualTo("ありがとうございます")
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun showPhrasebookEntry_withUnknownKey_changesNothing() = runBlocking {
+        viewModel.onEvent(TranslateEvent.ShowPhrasebookEntry("not_a_phrase"))
+        assertThat(viewModel.state.value).isEqualTo(TranslateState())
+    }
+
     /**
      * A successful translation emits twice, once for the result and once for the history insert,
      * in no guaranteed order. Waits until both have landed.

@@ -43,6 +43,8 @@
 		A4FFAF452F4DFFE700488508 /* MicrophonePowerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF442F4DFFE000488508 /* MicrophonePowerObserver.swift */; };
 		A4FFAF472F4E5BA300488508 /* VoiceRecorderDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF462F4E5BA300488508 /* VoiceRecorderDisplay.swift */; };
 		A4FFAF492F4E5D9300488508 /* VoiceRecorderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFAF482F4E5D9300488508 /* VoiceRecorderButton.swift */; };
+		960D9A61E51A1E1E68C876E7 /* IOSPhrasebookViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A47B3EFBE63E1B1B27244DB /* IOSPhrasebookViewModel.swift */; };
+		92E973DF4004B0B9E681FC98 /* PhrasebookScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF0C0F484542EABEFCDD646 /* PhrasebookScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +99,8 @@
 		A4FFAF462F4E5BA300488508 /* VoiceRecorderDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRecorderDisplay.swift; sourceTree = "<group>"; };
 		A4FFAF482F4E5D9300488508 /* VoiceRecorderButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRecorderButton.swift; sourceTree = "<group>"; };
 		F8CE67D4F4ED04B88D562F5D /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
+		0A47B3EFBE63E1B1B27244DB /* IOSPhrasebookViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSPhrasebookViewModel.swift; sourceTree = "<group>"; };
+		5BF0C0F484542EABEFCDD646 /* PhrasebookScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhrasebookScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -180,6 +184,7 @@
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				A412579630A8FE6000C5A530 /* settings */,
+				74D32597AF5EEA442EDC4A87 /* phrasebook */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -330,6 +335,23 @@
 				F8CE67D4F4ED04B88D562F5D /* Pods-iosApp.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		74D32597AF5EEA442EDC4A87 /* phrasebook */ = {
+			isa = PBXGroup;
+			children = (
+				DD0A33321DDE39433FF3DC0B /* presentation */,
+			);
+			path = phrasebook;
+			sourceTree = "<group>";
+		};
+		DD0A33321DDE39433FF3DC0B /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				0A47B3EFBE63E1B1B27244DB /* IOSPhrasebookViewModel.swift */,
+				5BF0C0F484542EABEFCDD646 /* PhrasebookScreen.swift */,
+			);
+			path = presentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -506,6 +528,8 @@
 				A4FFAF2E2F4C0F4200488508 /* GradientSurface.swift in Sources */,
 				A420FCD22F47840600D43758 /* Colors.swift in Sources */,
 				A412579D30A8FE7400C5A530 /* SettingsScreen.swift in Sources */,
+				960D9A61E51A1E1E68C876E7 /* IOSPhrasebookViewModel.swift in Sources */,
+				92E973DF4004B0B9E681FC98 /* PhrasebookScreen.swift in Sources */,
 				A4FFAF302F4C108B00488508 /* LanguageDisplay.swift in Sources */,
 				A412578730A8FE4000C5A530 /* CozyCard.swift in Sources */,
 				A412578D30A8FE4900C5A530 /* CozyEntrance.swift in Sources */,

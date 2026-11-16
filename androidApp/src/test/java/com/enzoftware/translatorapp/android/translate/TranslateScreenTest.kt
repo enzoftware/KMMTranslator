@@ -51,6 +51,7 @@ class TranslateScreenTest {
 
     private val events = mutableListOf<TranslateEvent>()
     private var settingsOpened = false
+    private var phrasebookOpened = false
 
     private fun historyItem(id: Long, from: String, to: String) = UiHistoryItem(
         id = id,
@@ -72,6 +73,7 @@ class TranslateScreenTest {
                     settings = settings,
                     onEvent = { events += it },
                     onOpenSettings = { settingsOpened = true },
+                    onOpenPhrasebook = { phrasebookOpened = true },
                     hourOfDay = hourOfDay,
                 )
             }
@@ -106,6 +108,15 @@ class TranslateScreenTest {
         composeRule.onNodeWithContentDescription(str(R.string.cd_open_settings)).performClick()
 
         assertThat(settingsOpened).isTrue()
+    }
+
+    @Test
+    fun phrasebookButton_opensThePhrasebook() {
+        setScreen()
+
+        composeRule.onNodeWithContentDescription(str(R.string.cd_open_phrasebook)).performClick()
+
+        assertThat(phrasebookOpened).isTrue()
     }
 
     // ─── Idle editor ──────────────────────────────────────────────────────────

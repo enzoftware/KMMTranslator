@@ -16,11 +16,19 @@ Both apps share one design language: same palette, typography, layout, copy and 
 | :---: | :---: | :---: | :---: |
 | <img src="docs/screenshots/ios/01_home_translate.png" width="210" alt="Parley iOS home screen" /> | <img src="docs/screenshots/ios/02_translator_card_states.png" width="210" alt="Parley iOS translator card states" /> | <img src="docs/screenshots/ios/03_voice_to_text.png" width="210" alt="Parley iOS voice to text screen" /> | <img src="docs/screenshots/ios/04_settings.png" width="210" alt="Parley iOS settings screen" /> |
 
+| Offline Phrasebook | My Words |
+| :---: | :---: |
+| <img src="docs/screenshots/ios/05_phrasebook.png" width="210" alt="Parley iOS phrasebook with saved phrases bookmarked" /> | <img src="docs/screenshots/ios/06_my_words.png" width="210" alt="Parley iOS My Words list" /> |
+
 ### Android · Jetpack Compose
 
 | Home & Quick Phrases | Translator Card States | Voice-to-Text & Diagnostics | Profile & Appearance Settings |
 | :---: | :---: | :---: | :---: |
 | <img src="docs/screenshots/android/01_home_translate.png" width="210" alt="Parley Android home screen" /> | <img src="docs/screenshots/android/02_translator_card_states.png" width="210" alt="Parley Android translator card states" /> | <img src="docs/screenshots/android/03_voice_to_text.png" width="210" alt="Parley Android voice to text screen" /> | <img src="docs/screenshots/android/04_settings.png" width="210" alt="Parley Android settings screen" /> |
+
+| Offline Phrasebook | My Words |
+| :---: | :---: |
+| <img src="docs/screenshots/android/05_phrasebook.png" width="210" alt="Parley Android phrasebook with saved phrases bookmarked" /> | <img src="docs/screenshots/android/06_my_words.png" width="210" alt="Parley Android My Words list" /> |
 
 ---
 
@@ -29,6 +37,7 @@ Both apps share one design language: same palette, typography, layout, copy and 
 - **10-Language Bidirectional Translation**: Translate between English, Arabic, Azerbaijani, Chinese, French, German, Italian, Japanese, Korean, and Spanish with instant language swapping.
 - **Voice-to-Text Capture & Live Waveform**: Native speech recognition (`SFSpeechRecognizer` + `AVAudioEngine` on iOS; `SpeechRecognizer` on Android) paired with a real-time normalized microphone power meter, actionable missing-permission diagnostics (in-app microphone request or one-tap redirect to system Settings), and speech-service availability checks on Android.
 - **Text-to-Speech Playback**: Native `AVSpeechSynthesizer` (iOS) and Android `TextToSpeech` playback directly from translation output cards, automatically cancelling stale utterances when switching languages or clearing text.
+- **Offline Phrasebook & My Words**: 25 everyday phrases (greetings, courtesy, conversation, travel, food) with built-in translations for all 10 languages. Tapping one shows its translation instantly, with no network needed. Bookmark phrases to **My Words** per language pair, and remove them with the ✕ button or a swipe. Saved words are stored with Room.
 - **Persistent Translation History**: Local persistence powered by **Room** (Kotlin Multiplatform, bundled SQLite) with reactive `Flow` history streams and one-tap reload into the active editor. History saved by earlier SQLDelight-based versions is imported automatically on first launch.
 - **Profile & Appearance Settings**: A personal name for the home greeting plus a Light (Warm Paper) / Dark (Espresso Ink) theme, persisted with `UserDefaults` on iOS and Jetpack DataStore on Android.
 - **"Warm Paper & Indigo" Design System on both platforms**:

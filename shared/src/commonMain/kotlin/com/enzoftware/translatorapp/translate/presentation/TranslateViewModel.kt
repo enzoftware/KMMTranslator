@@ -3,6 +3,7 @@ package com.enzoftware.translatorapp.translate.presentation
 import com.enzoftware.translatorapp.core.presentation.UiLanguage
 import com.enzoftware.translatorapp.core.util.Resource
 import com.enzoftware.translatorapp.core.util.toCommonStateFlow
+import com.enzoftware.translatorapp.phrasebook.domain.Phrasebook
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
 import com.enzoftware.translatorapp.translate.domain.translate.TranslateException
 import com.enzoftware.translatorapp.translate.domain.translate.TranslateUseCase
@@ -97,6 +98,7 @@ class TranslateViewModel(
             is SubmitVoiceResult -> onSubmitVoiceResult(event)
             SwapLanguages -> onSwapLanguages()
             Translate -> translate(_state.value)
+            is ShowPhrasebookEntry -> onShowPhrasebookEntry(event)
             else -> Unit
         }
     }
@@ -120,6 +122,29 @@ class TranslateViewModel(
         }
     }
 
+
+    /**
+     * Shows a phrasebook entry in the current language pair. The translation is built in, so this
+     * works offline and, unlike a real translation, does not add a history item.
+     */
+    private fun onShowPhrasebookEntry(event: ShowPhrasebookEntry) {
+        val entry = Phrasebook.byKey(event.entryKey) ?: return
+        translateJob?.cancel()
+        _state.update {
+            val from = event.fromLanguageCode?.let(UiLanguage::byCode) ?: it.fromLanguage
+            val to = event.toLanguageCode?.let(UiLanguage::byCode) ?: it.toLanguage
+            it.copy(
+                fromLanguage = from,
+                toLanguage = to,
+                fromText = entry.textIn(from.language),
+                toText = entry.textIn(to.language),
+                isTranslating = false,
+                isChoosingFromLanguage = false,
+                isChoosingToLanguage = false,
+                error = null,
+            )
+        }
+    }
 
     /**
      * Handles the event of changing the translation text.

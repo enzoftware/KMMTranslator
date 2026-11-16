@@ -1,5 +1,6 @@
 package com.enzoftware.translatorapp.translate.data.local
 
+import androidx.room3.AutoMigration
 import androidx.room3.ConstructedBy
 import androidx.room3.Dao
 import androidx.room3.Database
@@ -42,10 +43,50 @@ interface HistoryDao {
     suspend fun upsertAll(entities: List<HistoryEntity>)
 }
 
-@Database(entities = [HistoryEntity::class], version = 1)
+/** A phrasebook entry saved for one language pair ("My Words"). */
+@Entity(
+    tableName = "savedWordEntity",
+    primaryKeys = ["entryKey", "fromLanguageCode", "toLanguageCode"],
+)
+data class SavedWordEntity(
+    val entryKey: String,
+    val fromLanguageCode: String,
+    val fromText: String,
+    val toLanguageCode: String,
+    val toText: String,
+    val savedAt: Long,
+)
+
+@Dao
+interface SavedWordDao {
+    @Query("SELECT * FROM savedWordEntity ORDER BY savedAt DESC")
+    fun observeAll(): Flow<List<SavedWordEntity>>
+
+    /** Saving the same entry for the same pair again just refreshes it. */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(entity: SavedWordEntity)
+
+    @Query(
+        "DELETE FROM savedWordEntity WHERE entryKey = :entryKey " +
+            "AND fromLanguageCode = :fromLanguageCode AND toLanguageCode = :toLanguageCode",
+    )
+    suspend fun delete(entryKey: String, fromLanguageCode: String, toLanguageCode: String)
+}
+
+/**
+ * Version history (schemas in `shared/schemas/`):
+ * - 1: `historyEntity`
+ * - 2: adds `savedWordEntity` (auto-migrated: a new table needs no hand-written SQL)
+ */
+@Database(
+    entities = [HistoryEntity::class, SavedWordEntity::class],
+    version = 2,
+    autoMigrations = [AutoMigration(from = 1, to = 2)],
+)
 @ConstructedBy(TranslatorDatabaseConstructor::class)
 abstract class TranslatorDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
+    abstract fun savedWordDao(): SavedWordDao
 
     companion object {
         /** File name of the Room database. */

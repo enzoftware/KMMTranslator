@@ -102,6 +102,7 @@ fun TranslateScreen(
     onEvent: (TranslateEvent) -> Unit,
     onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
+    onOpenPhrasebook: () -> Unit = {},
     hourOfDay: Int = remember { Calendar.getInstance().get(Calendar.HOUR_OF_DAY) },
 ) {
     val colors = CozyTheme.colors
@@ -135,6 +136,7 @@ fun TranslateScreen(
                         settings = settings,
                         hourOfDay = hourOfDay,
                         onOpenSettings = onOpenSettings,
+                        onOpenPhrasebook = onOpenPhrasebook,
                         modifier = Modifier
                             .padding(horizontal = CozySpacing.md)
                             .cozyEntrance(0),
@@ -209,6 +211,7 @@ private fun GreetingBar(
     settings: UserSettings,
     hourOfDay: Int,
     onOpenSettings: () -> Unit,
+    onOpenPhrasebook: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = CozyTheme.colors
@@ -253,6 +256,12 @@ private fun GreetingBar(
                 )
             }
         }
+        CozyChromeIconButton(
+            icon = Icons.AutoMirrored.Rounded.MenuBook,
+            contentDescription = stringResource(R.string.cd_open_phrasebook),
+            onClick = onOpenPhrasebook,
+        )
+        Spacer(Modifier.size(8.dp))
         CozyChromeIconButton(
             icon = Icons.Rounded.Settings,
             contentDescription = stringResource(R.string.cd_open_settings),

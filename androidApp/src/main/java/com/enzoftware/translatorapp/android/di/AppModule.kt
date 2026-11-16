@@ -2,7 +2,8 @@ package com.enzoftware.translatorapp.android.di
 
 import android.app.Application
 import com.enzoftware.translatorapp.translate.data.local.TranslatorDatabaseFactory
-import com.enzoftware.translatorapp.translate.data.local.createHistoryDataSource
+import com.enzoftware.translatorapp.translate.data.local.TranslatorStorage
+import com.enzoftware.translatorapp.phrasebook.domain.SavedWordsDataSource
 import com.enzoftware.translatorapp.translate.data.remote.HttpClientFactory
 import com.enzoftware.translatorapp.translate.data.translate.KtorTranslateClient
 import com.enzoftware.translatorapp.translate.domain.history.HistoryDataSource
@@ -29,8 +30,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideHistoryDataSource(app: Application): HistoryDataSource =
-        TranslatorDatabaseFactory(app).createHistoryDataSource()
+    fun provideTranslatorStorage(app: Application): TranslatorStorage =
+        TranslatorStorage(TranslatorDatabaseFactory(app))
+
+    @Provides
+    @Singleton
+    fun provideHistoryDataSource(storage: TranslatorStorage): HistoryDataSource = storage.historyDataSource
+
+    @Provides
+    @Singleton
+    fun provideSavedWordsDataSource(storage: TranslatorStorage): SavedWordsDataSource = storage.savedWordsDataSource
 
     @Provides
     @Singleton
